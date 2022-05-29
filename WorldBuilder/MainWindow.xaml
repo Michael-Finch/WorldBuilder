@@ -5,8 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WorldBuilder"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="World Builder" Height="485" Width="800">
+    <Grid x:Name="gridMain" Height="454" VerticalAlignment="Top" Margin="0,10,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="lblInputKingdomName" Content="Kingdom Name" HorizontalAlignment="Left" Margin="24,72,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblInputPhysicalArea" Content="Physical Area" HorizontalAlignment="Left" Margin="38,111,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblInputPopulationDensity" Content="Population Density" HorizontalAlignment="Left" Margin="8,150,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblInputKingdomAge" Content="Kingdom Age" HorizontalAlignment="Left" Margin="35,189,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="125,76,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="273"/>
+        <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="125,115,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="125,193,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="125,152,0,0" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Content="Desolate"/>
+            <ComboBoxItem Content="Low"/>
+            <ComboBoxItem Content="Settled"/>
+            <ComboBoxItem Content="Average" IsSelected="True"/>
+            <ComboBoxItem Content="High"/>
+            <ComboBoxItem Content="Maximum"/>
+        </ComboBox>
+        <Label x:Name="lblDisplayKingdomName" Content="Kingdom Name" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" FontSize="24"/>
+        <Label x:Name="lblSquareMiles" Content="sq. miles" HorizontalAlignment="Left" Margin="250,111,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblInputPopulationDensity2" Content="(80 persons per sq. mile)" HorizontalAlignment="Left" Margin="250,150,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblYears" Content="years" HorizontalAlignment="Left" Margin="250,189,0,0" VerticalAlignment="Top"/>
+        <Grid Margin="0,226,0,122" ShowGridLines="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Physical Area" HorizontalAlignment="Right" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <Label Content="Population" HorizontalAlignment="Right" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Center"/>
+            <Label Content="Settlements" HorizontalAlignment="Right" Margin="10,0,0,0" Grid.Row="2" VerticalAlignment="Center"/>
+            <Label Content="Castles" HorizontalAlignment="Right" Margin="10,0,0,0" Grid.Row="3" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Et netus et malesuada fames." VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Adipiscing enim eu turpis egestas pretium. Arcu felis bibendum ut tristique et egestas quis. Maecenas sed enim ut sem viverra aliquet eget sit." VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus mattis molestie a iaculis at erat pellentesque adipiscing commodo. Tincidunt praesent semper feugiat nibh sed pulvinar proin gravida hendrerit. Sit amet consectetur adipiscing elit duis tristique sollicitudin nibh. Vestibulum mattis ullamcorper velit sed. Et sollicitudin ac orci phasellus egestas. Quam pellentesque nec nam aliquam sem et tortor. Eu sem integer vitae justo eget magna." VerticalAlignment="Center" Margin="10,0,0,0"/>
+        </Grid>
     </Grid>
 </Window>
