@@ -46,6 +46,7 @@ namespace WorldBuilder
             e.Handled = regex.IsMatch(e.Text);
         }
 
+        //Update population density when the combobox is changed
         private void cmbPopulationDensity_DropDownClosed(object sender, EventArgs e)
         {
             //Get the selected population density
