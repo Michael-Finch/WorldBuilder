@@ -21,15 +21,22 @@ namespace WorldBuilder
     /// </summary>
     public partial class MainWindow : Window
     {
+        //Variables describing the kingdom
+        string kingdomName = "Kingdom Name";
+        int physicalArea = 150000;
+        int populationDensity = 80;
+        int kingdomAge = 500;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        //Update kingdom name label when the name is changed
+        //Update kingdom name when the text is changed
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            lblDisplayKingdomName.Content = txtKingdomName.Text;
+            kingdomName = txtKingdomAge.Text;
+            lblDisplayKingdomName.Content = kingdomName
         }
 
         //Ensure certain textboxes only accept numerical input
@@ -39,6 +46,40 @@ namespace WorldBuilder
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        
+        //Update population density when selection is changed
+        private void cmbPopulationDensity_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //Get the selected population density
+            ComboBoxItem typeItem = (ComboBoxItem)cmbPopulationDensity.SelectedItem;
+            string densitySelection = typeItem.Content.ToString();
+
+            //Update the population density
+            if (densitySelection.Equals("Desolate"))
+            {
+                populationDensity = 20;
+            }
+            else if(densitySelection.Equals("Low"))
+            {
+                populationDensity = 40;
+            }
+            else if (densitySelection.Equals("Settled"))
+            {
+                populationDensity = 60;
+            }
+            else if (densitySelection.Equals("Average"))
+            {
+                populationDensity = 80;
+            }
+            else if (densitySelection.Equals("High"))
+            {
+                populationDensity = 100;
+            }
+            else if (densitySelection.Equals("Maximum"))
+            {
+                populationDensity = 120;
+            }
+            //Update label
+            lblInputPopulationDensity2.Content = "(" + populationDensity.ToString() + " persons per sq. mile)";
+        }
     }
 }
