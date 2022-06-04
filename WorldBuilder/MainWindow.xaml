@@ -18,8 +18,8 @@
                 <Label x:Name="lblInputPopulationDensity" Content="Population Density" HorizontalAlignment="Left" Margin="144,225,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblInputKingdomAge" Content="Kingdom Age" HorizontalAlignment="Left" Margin="171,263,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272" TextChanged="txtKingdomName_TextChanged"/>
-                <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput" Text="150000"/>
-                <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput" Text="500"/>
+                <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" TextChanged="txtPhysicalArea_TextChanged" PreviewTextInput="txtEnsureNumeric"/>
+                <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" TextChanged="txtKingdomAge_TextChanged"/>
                 <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="cmbPopulationDensity_DropDownClosed">
                     <ComboBoxItem Content="Desolate"/>
                     <ComboBoxItem Content="Low"/>
@@ -211,7 +211,7 @@
                 <Label x:Name="lblInputSettlementName" Content="Settlement Name" HorizontalAlignment="Left" Margin="151,147,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblInputPopulation" Content="Population" HorizontalAlignment="Left" Margin="186,186,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtSettlementName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272"/>
-                <TextBox x:Name="txtPopulation" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput"/>
+                <TextBox x:Name="txtPopulation" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric"/>
                 <Label x:Name="lblDisplaySettlementName" Content="Settlement Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24"/>
             </Grid>
         </TabItem>

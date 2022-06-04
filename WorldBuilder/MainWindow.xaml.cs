@@ -36,15 +36,36 @@ namespace WorldBuilder
             InitializeComponent();
         }
 
-        //Update kingdom name when the text is changed
+        //Update output as kindgom name is changed
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
         {
             kingdomName = txtKingdomName.Text;
             lblDisplayKingdomName.Content = kingdomName;
+
+            //Update output
+            updateKingdomOutput();
         }
 
-        //Ensure certain textboxes only accept numerical input
-        private void txtNumerical_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        //Update output as physical area is changed
+        private void txtPhysicalArea_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Int32.TryParse(txtPhysicalArea.Text, out physicalArea);
+
+            //Update output
+            updateKingdomOutput();
+        }
+
+        //Update output as kingdom age is changed
+        private void txtKingdomAge_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Int32.TryParse(txtKingdomAge.Text, out kingdomAge);
+
+            //Update output
+            updateKingdomOutput();
+        }
+
+        //Ensure certain textboxes only accept numeric input
+        private void txtEnsureNumeric(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
@@ -91,19 +112,30 @@ namespace WorldBuilder
 
             //Update label
             lblDisplayPopulationDensity.Content = "(" + populationDensity.ToString() + " persons per sq. mile)";
+
+            //Update output
+            updateKingdomOutput();
+        }
+
+        //Update output text blocks
+        private void updateKingdomOutput()
+        {
+            kingdomCalculatePhysicalArea();
         }
 
         //Do calculations for kingdom's physical area and display information
         private void kingdomCalculatePhysicalArea()
         {
-            double arableLand = physicalArea * percentArable / 100;
+            double arableLand = (double)physicalArea * percentArable / 100;
             double wilderness = physicalArea - arableLand;
 
             string physicalAreaString = kingdomName + " covers an area of " + physicalArea.ToString() + " square miles. Of this, " +
-                                        arableLand.ToString() + "% (" + arableLand.ToString() + " square miles) is arable land, and " +
+                                        percentArable.ToString() + "% (" + arableLand.ToString() + " square miles) is arable land, and " +
                                         (100 - percentArable).ToString() + "% (" + wilderness.ToString() + " square miles) is wilderness.";
 
             txtblockOutputPhysicalArea.Text = physicalAreaString;
         }
+
+        
     }
 }
