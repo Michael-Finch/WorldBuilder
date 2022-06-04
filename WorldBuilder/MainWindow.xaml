@@ -47,10 +47,10 @@
                     <Label Content="Population" HorizontalAlignment="Right" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Center"/>
                     <Label Content="Settlements" HorizontalAlignment="Right" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Center"/>
                     <Label Content="Castles" HorizontalAlignment="Right" Margin="10,10,0,0" Grid.Row="3" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
+                    <TextBlock x:Name="txtblockOutputPhysicalArea" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
+                    <TextBlock x:Name="txtblockOutputPopulation" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
+                    <TextBlock x:Name="txtblockOutputSettlements" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
+                    <TextBlock x:Name="txtblockOutputCastles" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
                 </Grid>
             </Grid>
         </TabItem>

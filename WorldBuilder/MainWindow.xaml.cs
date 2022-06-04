@@ -92,5 +92,18 @@ namespace WorldBuilder
             //Update label
             lblDisplayPopulationDensity.Content = "(" + populationDensity.ToString() + " persons per sq. mile)";
         }
+
+        //Do calculations for kingdom's physical area and display information
+        private void kingdomCalculatePhysicalArea()
+        {
+            double arableLand = physicalArea * percentArable / 100;
+            double wilderness = physicalArea - arableLand;
+
+            string physicalAreaString = kingdomName + " covers an area of " + physicalArea.ToString() + " square miles. Of this, " +
+                                        arableLand.ToString() + "% (" + arableLand.ToString() + " square miles) is arable land, and " +
+                                        (100 - percentArable).ToString() + "% (" + wilderness.ToString() + " square miles) is wilderness.";
+
+            txtblockOutputPhysicalArea.Text = physicalAreaString;
+        }
     }
 }
