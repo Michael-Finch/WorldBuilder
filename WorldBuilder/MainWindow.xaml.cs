@@ -26,11 +26,19 @@ namespace WorldBuilder
             InitializeComponent();
         }
 
+        //Update kingdom name label when the name is changed
+        private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            lblDisplayKingdomName.Content = txtKingdomName.Text;
+        }
+
         //Ensure certain textboxes only accept numerical input
         private void txtNumerical_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+
+        
     }
 }

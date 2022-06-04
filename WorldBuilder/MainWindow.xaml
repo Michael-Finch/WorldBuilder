@@ -17,9 +17,9 @@
 
                 <Label x:Name="lblInputPopulationDensity" Content="Population Density" HorizontalAlignment="Left" Margin="144,225,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblInputKingdomAge" Content="Kingdom Age" HorizontalAlignment="Left" Margin="171,263,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272"/>
-                <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput"/>
-                <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput"/>
+                <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272" TextChanged="txtKingdomName_TextChanged"/>
+                <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput" Text="150000"/>
+                <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput" Text="500"/>
                 <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120">
                     <ComboBoxItem Content="Desolate"/>
                     <ComboBoxItem Content="Low"/>
