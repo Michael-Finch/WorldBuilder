@@ -18,8 +18,8 @@
                 <Label x:Name="lblInputPopulationDensity" Content="Population Density" HorizontalAlignment="Left" Margin="144,225,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblInputKingdomAge" Content="Kingdom Age" HorizontalAlignment="Left" Margin="171,263,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272"/>
-                <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput"/>
+                <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput"/>
                 <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120">
                     <ComboBoxItem Content="Desolate"/>
                     <ComboBoxItem Content="Low"/>
@@ -117,7 +117,7 @@
                         <Label x:Name="tblBucklemakers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
 
                         <Label Grid.Column="2" Content="Butchers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblButchers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
+                        <Label x:Name="tblButchers" Grid.Column="3" Content="" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
                         <Label Grid.Column="2" Content="Carpenters" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                         <Label x:Name="tblCarpenters" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                         <Label Grid.Column="2" Content="Chandlers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
@@ -211,7 +211,7 @@
                 <Label x:Name="lblInputSettlementName" Content="Settlement Name" HorizontalAlignment="Left" Margin="151,147,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblInputPopulation" Content="Population" HorizontalAlignment="Left" Margin="186,186,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtSettlementName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272"/>
-                <TextBox x:Name="txtPopulation" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="txtPopulation" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput"/>
                 <Label x:Name="lblDisplaySettlementName" Content="Settlement Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24"/>
             </Grid>
         </TabItem>
