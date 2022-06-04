@@ -35,7 +35,7 @@ namespace WorldBuilder
         //Update kingdom name when the text is changed
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            kingdomName = txtKingdomAge.Text;
+            kingdomName = txtKingdomName.Text;
             lblDisplayKingdomName.Content = kingdomName;
         }
 
@@ -46,8 +46,7 @@ namespace WorldBuilder
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        //Update population density when selection is changed
-        private void cmbPopulationDensity_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cmbPopulationDensity_DropDownClosed(object sender, EventArgs e)
         {
             //Get the selected population density
             ComboBoxItem typeItem = (ComboBoxItem)cmbPopulationDensity.SelectedItem;
@@ -58,7 +57,7 @@ namespace WorldBuilder
             {
                 populationDensity = 20;
             }
-            else if(densitySelection.Equals("Low"))
+            else if (densitySelection.Equals("Low"))
             {
                 populationDensity = 40;
             }
@@ -78,8 +77,9 @@ namespace WorldBuilder
             {
                 populationDensity = 120;
             }
+
             //Update label
-            lblInputPopulationDensity2.Content = "(" + populationDensity.ToString() + " persons per sq. mile)";
+            lblDisplayPopulationDensity.Content = "(" + populationDensity.ToString() + " persons per sq. mile)";
         }
     }
 }

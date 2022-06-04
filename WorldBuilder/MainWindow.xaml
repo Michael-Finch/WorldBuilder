@@ -20,7 +20,7 @@
                 <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272" TextChanged="txtKingdomName_TextChanged"/>
                 <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput" Text="150000"/>
                 <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtNumerical_PreviewTextInput" Text="500"/>
-                <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbPopulationDensity_SelectionChanged">
+                <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="cmbPopulationDensity_DropDownClosed">
                     <ComboBoxItem Content="Desolate"/>
                     <ComboBoxItem Content="Low"/>
                     <ComboBoxItem Content="Settled"/>
@@ -30,7 +30,7 @@
                 </ComboBox>
                 <Label x:Name="lblDisplayKingdomName" Content="Kingdom Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24"/>
                 <Label x:Name="lblSquareMiles" Content="sq. miles" HorizontalAlignment="Left" Margin="386,186,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="lblInputPopulationDensity2" Content="(80 persons per sq. mile)" HorizontalAlignment="Left" Margin="386,225,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="lblDisplayPopulationDensity" Content="(80 persons per sq. mile)" HorizontalAlignment="Left" Margin="386,225,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblYears" Content="years" HorizontalAlignment="Left" Margin="386,263,0,0" VerticalAlignment="Top"/>
                 <Grid Margin="0,390,0,0">
                     <Grid.RowDefinitions>
