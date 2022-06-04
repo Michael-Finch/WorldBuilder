@@ -38,7 +38,15 @@ namespace WorldBuilder
             //Populate textboxes with reasonable defaults
             txtKingdomName.Text = kingdomName;
             txtPhysicalArea.Text = physicalArea.ToString();
+            cmbPopulationDensity.SelectedIndex = 3;
             txtKingdomAge.Text = kingdomAge.ToString();
+        }
+
+        //Ensure certain textboxes only accept numeric input
+        private void txtEnsureNumeric(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
 
         //Update output as kindgom name is changed
@@ -69,15 +77,8 @@ namespace WorldBuilder
             updateKingdomOutput();
         }
 
-        //Ensure certain textboxes only accept numeric input
-        private void txtEnsureNumeric(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
-
-        //Update population density and arable land when the combobox is changed
-        private void cmbPopulationDensity_DropDownClosed(object sender, EventArgs e)
+        //Update output when population density is changed
+        private void cmbPopulationDensity_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //Get the selected population density
             ComboBoxItem typeItem = (ComboBoxItem)cmbPopulationDensity.SelectedItem;
@@ -125,11 +126,12 @@ namespace WorldBuilder
         //Update output text blocks
         private void updateKingdomOutput()
         {
-            kingdomCalculatePhysicalArea();
+            calculateKingdomPhysicalArea();
+            calculateKingdomTotalPopulation();
         }
 
         //Do calculations for kingdom's physical area and display information
-        private void kingdomCalculatePhysicalArea()
+        private void calculateKingdomPhysicalArea()
         {
             double arableLand = (double)physicalArea * percentArable / 100;
             double wilderness = physicalArea - arableLand;
@@ -141,6 +143,14 @@ namespace WorldBuilder
             txtblockOutputPhysicalArea.Text = physicalAreaString;
         }
 
-        
+        //Do calculations for kingdom's total population and display information
+        private void calculateKingdomTotalPopulation()
+        {
+            int totalPopulation = physicalArea * populationDensity;
+
+            string totalPopulationString = kingdomName + " has a total population of " + totalPopulation.ToString() + " people.";
+
+            txtblockOutputPopulation.Text = totalPopulationString;
+        }
     }
 }

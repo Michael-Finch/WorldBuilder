@@ -20,11 +20,11 @@
                 <TextBox x:Name="txtKingdomName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272" TextChanged="txtKingdomName_TextChanged"/>
                 <TextBox x:Name="txtPhysicalArea" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" TextChanged="txtPhysicalArea_TextChanged" PreviewTextInput="txtEnsureNumeric"/>
                 <TextBox x:Name="txtKingdomAge" HorizontalAlignment="Left" Margin="258,267,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" TextChanged="txtKingdomAge_TextChanged"/>
-                <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="cmbPopulationDensity_DropDownClosed">
+                <ComboBox x:Name="cmbPopulationDensity" HorizontalAlignment="Left" Margin="258,229,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbPopulationDensity_SelectionChanged">
                     <ComboBoxItem Content="Desolate"/>
                     <ComboBoxItem Content="Low"/>
                     <ComboBoxItem Content="Settled"/>
-                    <ComboBoxItem Content="Average" IsSelected="True"/>
+                    <ComboBoxItem Content="Average"/>
                     <ComboBoxItem Content="High"/>
                     <ComboBoxItem Content="Maximum"/>
                 </ComboBox>
