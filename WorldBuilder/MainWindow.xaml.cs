@@ -21,11 +21,15 @@ namespace WorldBuilder
     /// </summary>
     public partial class MainWindow : Window
     {
+        //Random number generator
+        Random rnd = new Random();
+
         //Variables describing the kingdom
         string kingdomName = "Kingdom Name";
         int physicalArea = 150000;
         int populationDensity = 80;
         int kingdomAge = 500;
+        int percentArable = 45;
 
         public MainWindow()
         {
@@ -46,37 +50,43 @@ namespace WorldBuilder
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        //Update population density when the combobox is changed
+        //Update population density and arable land when the combobox is changed
         private void cmbPopulationDensity_DropDownClosed(object sender, EventArgs e)
         {
             //Get the selected population density
             ComboBoxItem typeItem = (ComboBoxItem)cmbPopulationDensity.SelectedItem;
             string densitySelection = typeItem.Content.ToString();
 
-            //Update the population density
+            //Update the population density and determine an appropriate percentage of arable land
             if (densitySelection.Equals("Desolate"))
             {
                 populationDensity = 20;
+                percentArable = rnd.Next(11, 21);
             }
             else if (densitySelection.Equals("Low"))
             {
                 populationDensity = 40;
+                percentArable = rnd.Next(21, 31);
             }
             else if (densitySelection.Equals("Settled"))
             {
                 populationDensity = 60;
+                percentArable = rnd.Next(31, 44);
             }
             else if (densitySelection.Equals("Average"))
             {
                 populationDensity = 80;
+                percentArable = rnd.Next(44, 55);
             }
             else if (densitySelection.Equals("High"))
             {
                 populationDensity = 100;
+                percentArable = rnd.Next(55, 66);
             }
             else if (densitySelection.Equals("Maximum"))
             {
                 populationDensity = 120;
+                percentArable = rnd.Next(66, 76);
             }
 
             //Update label
