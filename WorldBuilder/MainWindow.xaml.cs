@@ -36,7 +36,7 @@ namespace WorldBuilder
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
         {
             kingdomName = txtKingdomAge.Text;
-            lblDisplayKingdomName.Content = kingdomName
+            lblDisplayKingdomName.Content = kingdomName;
         }
 
         //Ensure certain textboxes only accept numerical input
