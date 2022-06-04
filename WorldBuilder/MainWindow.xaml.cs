@@ -25,7 +25,7 @@ namespace WorldBuilder
         Random rnd = new Random();
 
         //Variables describing the kingdom
-        string kingdomName = "Kingdom Name";
+        string kingdomName = "The Kingdom";
         int physicalArea = 150000;
         int populationDensity = 80;
         int kingdomAge = 500;
@@ -34,6 +34,11 @@ namespace WorldBuilder
         public MainWindow()
         {
             InitializeComponent();
+
+            //Populate textboxes with reasonable defaults
+            txtKingdomName.Text = kingdomName;
+            txtPhysicalArea.Text = physicalArea.ToString();
+            txtKingdomAge.Text = kingdomAge.ToString();
         }
 
         //Update output as kindgom name is changed
