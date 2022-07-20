@@ -24,6 +24,17 @@ namespace WorldBuilder
         int kingdomAge = 500;
         int percentArable = 45;
 
+        //World map variables
+        static int worldWidth = 128; //How many cells wide the world is
+        static int worldHeight = 128; //How many cells high the world is
+
+        //World map Image variables
+        MapColors mapColors = new MapColors(); //Byte data used for colors in the map
+        public static int cellSize = 4; //How many pixels one cell in the grid is
+        public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
+        static int imageWidth = worldWidth * cellSize; //How many pixels wide the image is
+        static int imageHeight = worldHeight * cellSize; //How many pixels high the image is
+
         public MainWindow()
         {
             InitializeComponent();
@@ -148,28 +159,8 @@ namespace WorldBuilder
 
         private void btnDrawTest_Click(object sender, RoutedEventArgs e)
         {
-            // World variables
-            int worldWidth = 128; //How many cells wide the world is
-            int worldHeight = 128; //How many cells high the world is
-
-            //Image variables
-            int cellSize = 4; //How many pixels one cell in the grid is
-            int imageWidth = worldWidth * cellSize; //How many pixels wide the image is
-            int imageHeight = worldHeight * cellSize; //How many pixels high the image is
-            int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel/8); //How many bytes are needed for one row of a cell, used for drawing
-
             //Create a new bitmap for drawing the world
             WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 96, 96, PixelFormats.Bgra32, null);
-
-            //Array of bytes for drawing a green cell, BGRA format
-            byte[] colorDataGreen = new byte[stride * cellSize];
-            for (int i = 0; i < cellSize * cellSize; ++i)
-            {
-                colorDataGreen[i * 4] = 0;
-                colorDataGreen[i * 4 + 1] = 255;
-                colorDataGreen[i * 4 + 2] = 0;
-                colorDataGreen[i * 4 + 3] = 255;
-            }
 
             //Our color data takes four bytes so stride is 4 * width of a cell
             for (int x = 0; x < worldWidth; x++)
@@ -179,12 +170,9 @@ namespace WorldBuilder
                     //Use an Int32Rect to choose the rectangular region to edit
                     //xy of top left corner plus width and height of edited region
                     Int32Rect rect = new Int32Rect(x*cellSize, y*cellSize, cellSize, cellSize);
-                    wb.WritePixels(rect, colorDataGreen, stride, 0);
+                    wb.WritePixels(rect, mapColors.water, stride, 0);
                 }
             }
-            
-            //Int32Rect rect = new Int32Rect(0, 0, cellSize, cellSize);
-            //wb.WritePixels(rect, colorDataGreen, stride, 0);
 
             image.Width = imageWidth;
             image.Height = imageHeight;
