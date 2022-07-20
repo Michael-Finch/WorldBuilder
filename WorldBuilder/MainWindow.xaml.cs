@@ -26,17 +26,17 @@ namespace WorldBuilder
         int percentArable = 45;
 
         //World map variables
-        static int worldWidth = 1024; //How many cells wide the world is
-        static int worldHeight = 1024; //How many cells high the world is
-        static byte[] heightMap = new byte[worldWidth * worldHeight];
-        static float[] moisture = new float[worldWidth * worldHeight];
+        static int worldSize = 1024; //How many cells wide the world is
+        static float[] heightMap = new float[worldSize * worldSize];
+        static float[] moisture = new float[worldSize * worldSize];
+        static float[] square = new float[worldSize * worldSize];
 
         //World map Image variables
         MapColors mapColors = new MapColors(); //Byte data used for colors in the map
         public static int cellSize = 1; //How many pixels one cell in the grid is
         public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
-        static int imageWidth = worldWidth * cellSize; //How many pixels wide the image is
-        static int imageHeight = worldHeight * cellSize; //How many pixels high the image is
+        static int imageWidth = worldSize * cellSize; //How many pixels wide the image is
+        static int imageHeight = worldSize * cellSize; //How many pixels high the image is
 
         public MainWindow()
         {
@@ -193,12 +193,33 @@ namespace WorldBuilder
             rnd.NextBytes(noiseSeed);
             Noise.perm = noiseSeed;
 
-            //Create a heightmap for the world
-            for (int x = 0; x < worldWidth; x++)
+            int half = worldSize / 2;
+            //Create a square matrix to subtract from the height map
+            float maxDistance = (float)(Math.Sqrt(worldSize * worldSize + worldSize * worldSize));
+            for (int x = 0; x < worldSize; ++x)
             {
-                for (int y = 0; y < worldHeight; y++)
+                for (int y = 0; y < worldSize; ++y)
                 {
-                    heightMap[(y * worldWidth) + x] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
+                    int adjustedX = x - half;
+                    int adjustedY = y - half;
+                    float distanceFromCenter = (float)(Math.Sqrt(adjustedX * adjustedX + adjustedY * adjustedY));
+                    float matrixValue = (float)((distanceFromCenter/maxDistance) * 255);
+                    square[(y * worldSize) + x] = matrixValue;
+                }
+            }
+
+            //Create a base heightmap for the world, subtract square matrix to make an island
+            for (int x = 0; x < worldSize; x++)
+            {
+                for (int y = 0; y < worldSize; y++)
+                {
+                    float heightValue = noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255);
+                    heightValue -= square[(y * worldSize) + x];
+                    if(heightValue < 0)
+                    {
+                        heightValue = 0;
+                    }
+                    heightMap[(y * worldSize) + x] = (byte)heightValue;
                 }
             }
 
@@ -207,48 +228,169 @@ namespace WorldBuilder
             Noise.perm = noiseSeed;
 
             //Create a moisture map for the world
-            for (int x = 0; x < worldWidth; x++)
+            for (int x = 0; x < worldSize; x++)
             {
-                for (int y = 0; y < worldHeight; y++)
+                for (int y = 0; y < worldSize; y++)
                 {
-                    moisture[(y * worldWidth) + x] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
+                    moisture[(y * worldSize) + x] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
                 }
             }
 
-            //Color each cell according to its height and moisture
-            for (int x = 0; x < worldWidth; x++)
+            /*
+            byte[] bytes = new byte[stride * cellSize];
+            for (int x = 0; x < worldSize; x++)
             {
-                for (int y = 0; y < worldHeight; y++)
+                for (int y = 0; y < worldSize; y++)
+                {
+                    for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                    {
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = (byte)square[(y * worldSize) + x];
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = (byte)square[(y * worldSize) + x];
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = (byte)square[(y * worldSize) + x];
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                    }
+                    Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    wb.WritePixels(rect, bytes, stride, 0);
+                }
+            }
+            */
+
+            //Color each cell according to its height and moisture
+            for (int x = 0; x < worldSize; x++)
+            {
+                for (int y = 0; y < worldSize; y++)
                 {
                     //Use an Int32Rect to choose the rectangular region to edit
                     //xy of top left corner plus width and height of edited region
                     byte[] bytes = new byte[stride * cellSize];
 
                     //Color each cell based on its height and moisture
-                    
-                    //Grassland
-                    if(heightMap[(y * worldWidth) + x] >= 100)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 0;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 80;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 40;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = (byte)((float)moisture[(y * worldWidth) + x]);
-                        }
-                    }
-                    //Water
-                    else
+
+                    //Snow
+                    if (heightMap[(y * worldSize) + x] >= 200)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 255;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = (byte)((float)heightMap[(y * worldWidth) + x]);
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = (byte)((float)heightMap[(y * worldWidth) + x]);
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 255;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 255;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                         }
                     }
-                    
+                    //Mountainous high
+                    else if (heightMap[(y * worldSize) + x] >= 175)
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 143;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 162;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 160;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Mountainous low
+                    else if (heightMap[(y * worldSize) + x] >= 150)
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 123;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 142;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 140;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Grassy/Desert
+                    else if (heightMap[(y * worldSize) + x] >= 70)
+                    {
+                        //High moisture grass
+                        if (moisture[(y * worldSize) + x] >= 191)
+                        {
+                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 0;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 77;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 40;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //Medium moisture grass
+                        else if (moisture[(y * worldSize) + x] >= 128)
+                        {
+                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 20;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 97;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 60;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //Low moisture grass
+                        else if (moisture[(y * worldSize) + x] >= 63)
+                        {
+                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 50;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 127;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 90;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //High moisture desert
+                        else if (moisture[(y * worldSize) + x] >= 32)
+                        {
+                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 69;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 118;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 134;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //low moisture desert
+                        else
+                        {
+                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 194;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                    }
+                    //Beach
+                    else if (heightMap[(y * worldSize) + x] >= 60)
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 194;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Shallow water
+                    else if (heightMap[(y * worldSize) + x] >= 30)
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 198;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 82;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 9;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Deep water
+                    else
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 178;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 62;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 0;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
                     Int32Rect rect = new Int32Rect(x*cellSize, y*cellSize, cellSize, cellSize);
                     wb.WritePixels(rect, bytes, stride, 0);
                 }
