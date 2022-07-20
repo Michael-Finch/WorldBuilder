@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Text.RegularExpressions;
+
 
 namespace WorldBuilder
 {
@@ -151,6 +144,51 @@ namespace WorldBuilder
             string totalPopulationString = kingdomName + " has a total population of " + totalPopulation.ToString() + " people.";
 
             txtblockOutputPopulation.Text = totalPopulationString;
+        }
+
+        private void btnDrawTest_Click(object sender, RoutedEventArgs e)
+        {
+            // World variables
+            int worldWidth = 128; //How many cells wide the world is
+            int worldHeight = 128; //How many cells high the world is
+
+            //Image variables
+            int cellSize = 4; //How many pixels one cell in the grid is
+            int imageWidth = worldWidth * cellSize; //How many pixels wide the image is
+            int imageHeight = worldHeight * cellSize; //How many pixels high the image is
+            int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel/8); //How many bytes are needed for one row of a cell, used for drawing
+
+            //Create a new bitmap for drawing the world
+            WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 96, 96, PixelFormats.Bgra32, null);
+
+            //Array of bytes for drawing a green cell, BGRA format
+            byte[] colorDataGreen = new byte[stride * cellSize];
+            for (int i = 0; i < cellSize * cellSize; ++i)
+            {
+                colorDataGreen[i * 4] = 0;
+                colorDataGreen[i * 4 + 1] = 255;
+                colorDataGreen[i * 4 + 2] = 0;
+                colorDataGreen[i * 4 + 3] = 255;
+            }
+
+            //Our color data takes four bytes so stride is 4 * width of a cell
+            for (int x = 0; x < worldWidth; x++)
+            {
+                for (int y = 0; y < worldHeight; y++)
+                {
+                    //Use an Int32Rect to choose the rectangular region to edit
+                    //xy of top left corner plus width and height of edited region
+                    Int32Rect rect = new Int32Rect(x*cellSize, y*cellSize, cellSize, cellSize);
+                    wb.WritePixels(rect, colorDataGreen, stride, 0);
+                }
+            }
+            
+            //Int32Rect rect = new Int32Rect(0, 0, cellSize, cellSize);
+            //wb.WritePixels(rect, colorDataGreen, stride, 0);
+
+            image.Width = imageWidth;
+            image.Height = imageHeight;
+            image.Source = wb;
         }
     }
 }

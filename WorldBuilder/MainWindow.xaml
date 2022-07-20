@@ -8,7 +8,7 @@
         Title="World Builder" Height="660" Width="1300">
     <TabControl>
         <TabItem Header="Kingdom">
-            <Grid x:Name="gridKingdom" Margin="0,10,0,0">
+            <Grid x:Name="gridKingdom" Height="616">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
@@ -55,7 +55,7 @@
             </Grid>
         </TabItem>
         <TabItem Header="Settlement">
-            <Grid x:Name="gridSettlement" Margin="0,10,0,0">
+            <Grid x:Name="gridSettlement" Height="627">
                 <Grid Margin="0,254,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -216,10 +216,12 @@
             </Grid>
         </TabItem>
         <TabItem Header="Map" Margin="-2,-2,-2,0">
-            <Grid x:Name="gridMap" Margin="0,10,0,0">
+            <Grid x:Name="gridMap">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                <Button x:Name="btnDrawTest" Content="Draw" HorizontalAlignment="Left" Margin="48,42,0,0" VerticalAlignment="Top" Click="btnDrawTest_Click"/>
+                <Image x:Name="image" HorizontalAlignment="Left" Height="500" Margin="131,0,0,0" VerticalAlignment="Top" Width="500"/>
             </Grid>
         </TabItem>
     </TabControl>
