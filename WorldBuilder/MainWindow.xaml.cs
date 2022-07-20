@@ -160,6 +160,29 @@ namespace WorldBuilder
             txtblockOutputPopulation.Text = totalPopulationString;
         }
 
+        //Function for calculating random noise ata given point with a given number of octaves
+        private float noiseWithOctaves(int x, int y, int octaves, float persistence, float scale, int low, int high)
+        {
+            float maxAmp = 0;
+            float amp = 1;
+            float frequency = scale;
+            float noise = 0;
+
+            for(int i = 0; i < octaves; ++i)
+            {
+                noise += Noise.Generate(x * frequency, y * frequency) * amp;
+                maxAmp += amp;
+                amp *= persistence;
+                frequency *= 2;
+            }
+
+            noise /= maxAmp;
+
+            noise = noise * (high - low) / 2 + (high + low) / 2;
+
+            return noise;
+        }
+
         private void btnDrawTest_Click(object sender, RoutedEventArgs e)
         {
             //Create a new bitmap for drawing the world
@@ -175,7 +198,7 @@ namespace WorldBuilder
             {
                 for (int y = 0; y < worldHeight; y++)
                 {
-                    heightMap[(y * worldWidth) + x] = (byte)(Noise.Generate(x / 100f, y / 100f) * 128 + 128);
+                    heightMap[(y * worldWidth) + x] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
                 }
             }
 
@@ -188,10 +211,9 @@ namespace WorldBuilder
             {
                 for (int y = 0; y < worldHeight; y++)
                 {
-                    moisture[(y * worldWidth) + x] = (byte)(Noise.Generate(x / 100f, y / 100f) * 128 + 128);
+                    moisture[(y * worldWidth) + x] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
                 }
             }
-
 
             //Color each cell according to its height and moisture
             for (int x = 0; x < worldWidth; x++)
@@ -203,19 +225,9 @@ namespace WorldBuilder
                     byte[] bytes = new byte[stride * cellSize];
 
                     //Color each cell based on its height and moisture
-                    //Water
-                    if(heightMap[(y * worldWidth) + x] <= 60)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 180;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 60;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 0;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
+                    
                     //Grassland
-                    else
+                    if(heightMap[(y * worldWidth) + x] >= 100)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -223,6 +235,17 @@ namespace WorldBuilder
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 80;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 40;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = (byte)((float)moisture[(y * worldWidth) + x]);
+                        }
+                    }
+                    //Water
+                    else
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 255;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = (byte)((float)heightMap[(y * worldWidth) + x]);
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = (byte)((float)heightMap[(y * worldWidth) + x]);
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                         }
                     }
                     
