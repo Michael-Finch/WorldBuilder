@@ -5,7 +5,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
-
+using SimplexNoise;
+using System.Diagnostics;
 
 namespace WorldBuilder
 {
@@ -25,12 +26,14 @@ namespace WorldBuilder
         int percentArable = 45;
 
         //World map variables
-        static int worldWidth = 128; //How many cells wide the world is
-        static int worldHeight = 128; //How many cells high the world is
+        static int worldWidth = 1024; //How many cells wide the world is
+        static int worldHeight = 1024; //How many cells high the world is
+        static byte[] heightMap = new byte[worldWidth * worldHeight];
+        static float[] moisture = new float[worldWidth * worldHeight];
 
         //World map Image variables
         MapColors mapColors = new MapColors(); //Byte data used for colors in the map
-        public static int cellSize = 4; //How many pixels one cell in the grid is
+        public static int cellSize = 1; //How many pixels one cell in the grid is
         public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
         static int imageWidth = worldWidth * cellSize; //How many pixels wide the image is
         static int imageHeight = worldHeight * cellSize; //How many pixels high the image is
@@ -162,15 +165,69 @@ namespace WorldBuilder
             //Create a new bitmap for drawing the world
             WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 96, 96, PixelFormats.Bgra32, null);
 
-            //Our color data takes four bytes so stride is 4 * width of a cell
+            //New seed every time
+            byte[] noiseSeed = new byte[512];
+            rnd.NextBytes(noiseSeed);
+            Noise.perm = noiseSeed;
+
+            //Create a heightmap for the world
+            for (int x = 0; x < worldWidth; x++)
+            {
+                for (int y = 0; y < worldHeight; y++)
+                {
+                    heightMap[(y * worldWidth) + x] = (byte)(Noise.Generate(x / 100f, y / 100f) * 128 + 128);
+                }
+            }
+
+            //New seed for moisture map
+            rnd.NextBytes(noiseSeed);
+            Noise.perm = noiseSeed;
+
+            //Create a moisture map for the world
+            for (int x = 0; x < worldWidth; x++)
+            {
+                for (int y = 0; y < worldHeight; y++)
+                {
+                    moisture[(y * worldWidth) + x] = (byte)(Noise.Generate(x / 100f, y / 100f) * 128 + 128);
+                }
+            }
+
+
+            //Color each cell according to its height and moisture
             for (int x = 0; x < worldWidth; x++)
             {
                 for (int y = 0; y < worldHeight; y++)
                 {
                     //Use an Int32Rect to choose the rectangular region to edit
                     //xy of top left corner plus width and height of edited region
+                    byte[] bytes = new byte[stride * cellSize];
+
+                    //Color each cell based on its height and moisture
+                    //Water
+                    if(heightMap[(y * worldWidth) + x] <= 60)
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 180;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 60;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 0;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Grassland
+                    else
+                    {
+                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 0;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 80;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 40;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = (byte)((float)moisture[(y * worldWidth) + x]);
+                        }
+                    }
+                    
                     Int32Rect rect = new Int32Rect(x*cellSize, y*cellSize, cellSize, cellSize);
-                    wb.WritePixels(rect, mapColors.water, stride, 0);
+                    wb.WritePixels(rect, bytes, stride, 0);
                 }
             }
 

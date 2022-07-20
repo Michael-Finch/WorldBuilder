@@ -8,4 +8,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="SimplexNoise">
+      <HintPath>libs\SimplexNoise.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
