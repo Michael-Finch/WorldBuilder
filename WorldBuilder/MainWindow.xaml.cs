@@ -27,9 +27,9 @@ namespace WorldBuilder
 
         //World map variables
         static int worldSize = 1024; //How many cells wide the world is
-        static float[] heightMap = new float[worldSize * worldSize];
-        static float[] moisture = new float[worldSize * worldSize];
-        static float[] square = new float[worldSize * worldSize];
+        static float[,] heightMap = new float[worldSize, worldSize];
+        static float[,] moisture = new float[worldSize, worldSize];
+        static float[,] square = new float[worldSize, worldSize];
 
         //World map Image variables
         MapColors mapColors = new MapColors(); //Byte data used for colors in the map
@@ -168,7 +168,7 @@ namespace WorldBuilder
             float frequency = scale;
             float noise = 0;
 
-            for(int i = 0; i < octaves; ++i)
+            for (int i = 0; i < octaves; ++i)
             {
                 noise += Noise.Generate(x * frequency, y * frequency) * amp;
                 maxAmp += amp;
@@ -203,8 +203,8 @@ namespace WorldBuilder
                     int adjustedX = x - half;
                     int adjustedY = y - half;
                     float distanceFromCenter = (float)(Math.Sqrt(adjustedX * adjustedX + adjustedY * adjustedY));
-                    float matrixValue = (float)((distanceFromCenter/maxDistance) * 255);
-                    square[(y * worldSize) + x] = matrixValue;
+                    float matrixValue = (float)((distanceFromCenter / maxDistance) * 255);
+                    square[x, y] = matrixValue;
                 }
             }
 
@@ -214,12 +214,12 @@ namespace WorldBuilder
                 for (int y = 0; y < worldSize; y++)
                 {
                     float heightValue = noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255);
-                    heightValue -= square[(y * worldSize) + x];
-                    if(heightValue < 0)
+                    heightValue -= square[x, y];
+                    if (heightValue < 0)
                     {
                         heightValue = 0;
                     }
-                    heightMap[(y * worldSize) + x] = (byte)heightValue;
+                    heightMap[x, y] = (byte)heightValue;
                 }
             }
 
@@ -232,7 +232,7 @@ namespace WorldBuilder
             {
                 for (int y = 0; y < worldSize; y++)
                 {
-                    moisture[(y * worldSize) + x] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
+                    moisture[x, y] = (byte)(noiseWithOctaves(x, y, 10, 0.5f, 0.007f, 0, 255));
                 }
             }
 
@@ -267,7 +267,7 @@ namespace WorldBuilder
                     //Color each cell based on its height and moisture
 
                     //Snow
-                    if (heightMap[(y * worldSize) + x] >= 200)
+                    if (heightMap[x, y] >= 200)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -278,7 +278,7 @@ namespace WorldBuilder
                         }
                     }
                     //Mountainous high
-                    else if (heightMap[(y * worldSize) + x] >= 175)
+                    else if (heightMap[x, y] >= 175)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -289,7 +289,7 @@ namespace WorldBuilder
                         }
                     }
                     //Mountainous low
-                    else if (heightMap[(y * worldSize) + x] >= 150)
+                    else if (heightMap[x, y] >= 150)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -300,10 +300,10 @@ namespace WorldBuilder
                         }
                     }
                     //Grassy/Desert
-                    else if (heightMap[(y * worldSize) + x] >= 70)
+                    else if (heightMap[x, y] >= 70)
                     {
                         //High moisture grass
-                        if (moisture[(y * worldSize) + x] >= 191)
+                        if (moisture[x, y] >= 191)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -314,7 +314,7 @@ namespace WorldBuilder
                             }
                         }
                         //Medium moisture grass
-                        else if (moisture[(y * worldSize) + x] >= 128)
+                        else if (moisture[x, y] >= 128)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -325,7 +325,7 @@ namespace WorldBuilder
                             }
                         }
                         //Low moisture grass
-                        else if (moisture[(y * worldSize) + x] >= 63)
+                        else if (moisture[x, y] >= 63)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -336,7 +336,7 @@ namespace WorldBuilder
                             }
                         }
                         //High moisture desert
-                        else if (moisture[(y * worldSize) + x] >= 32)
+                        else if (moisture[x, y] >= 32)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -359,7 +359,7 @@ namespace WorldBuilder
                         }
                     }
                     //Beach
-                    else if (heightMap[(y * worldSize) + x] >= 60)
+                    else if (heightMap[x, y] >= 60)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -370,7 +370,7 @@ namespace WorldBuilder
                         }
                     }
                     //Shallow water
-                    else if (heightMap[(y * worldSize) + x] >= 30)
+                    else if (heightMap[x, y] >= 30)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -391,7 +391,7 @@ namespace WorldBuilder
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                         }
                     }
-                    Int32Rect rect = new Int32Rect(x*cellSize, y*cellSize, cellSize, cellSize);
+                    Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
                     wb.WritePixels(rect, bytes, stride, 0);
                 }
             }
