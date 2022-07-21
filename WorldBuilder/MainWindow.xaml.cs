@@ -193,18 +193,18 @@ namespace WorldBuilder
             rnd.NextBytes(noiseSeed);
             Noise.perm = noiseSeed;
 
-            int half = worldSize / 2;
+
             //Create a square matrix to subtract from the height map
-            float maxDistance = (float)(Math.Sqrt(worldSize * worldSize + worldSize * worldSize));
-            for (int x = 0; x < worldSize; ++x)
+            float half = worldSize / 2 + worldSize % 2;
+            for (int x = 0; x < half; ++x)
             {
-                for (int y = 0; y < worldSize; ++y)
+                for (int y = 0; y < half; ++y)
                 {
-                    int adjustedX = x - half;
-                    int adjustedY = y - half;
-                    float distanceFromCenter = (float)(Math.Sqrt(adjustedX * adjustedX + adjustedY * adjustedY));
-                    float matrixValue = (float)((distanceFromCenter / maxDistance) * 255);
-                    square[x, y] = matrixValue;
+                    byte a = (byte)((1 - Math.Min(x, y) / (half - 1)) * 255);
+                    square[x, y] = a;
+                    square[(worldSize - x) - 1, y] = a;
+                    square[(worldSize - x) - 1, (worldSize - y) - 1] = a;
+                    square[x, (worldSize - y) - 1] = a;
                 }
             }
 
@@ -236,6 +236,7 @@ namespace WorldBuilder
                 }
             }
 
+            //Debug, uncomment to draw the square matrix
             /*
             byte[] bytes = new byte[stride * cellSize];
             for (int x = 0; x < worldSize; x++)
@@ -244,9 +245,9 @@ namespace WorldBuilder
                 {
                     for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                     {
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = (byte)square[(y * worldSize) + x];
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = (byte)square[(y * worldSize) + x];
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = (byte)square[(y * worldSize) + x];
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = (byte)square[x, y];
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = (byte)square[x, y];
+                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = (byte)square[x, y];
                         bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                     }
                     Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
@@ -255,6 +256,7 @@ namespace WorldBuilder
             }
             */
 
+            
             //Color each cell according to its height and moisture
             for (int x = 0; x < worldSize; x++)
             {
