@@ -117,7 +117,7 @@
                         <Label x:Name="tblBucklemakers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
 
                         <Label Grid.Column="2" Content="Butchers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblButchers" Grid.Column="3" Content="" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
+                        <Label x:Name="tblButchers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
                         <Label Grid.Column="2" Content="Carpenters" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                         <Label x:Name="tblCarpenters" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                         <Label Grid.Column="2" Content="Chandlers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
