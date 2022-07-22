@@ -256,7 +256,21 @@ namespace WorldBuilder
             }
             */
 
-            
+            //Define values for heights and moistures for different biomes
+            //Heights range from 0-255
+            int snowCapMinHeight = 175;
+            int highMountainMinHeight = 150;
+            int lowMountainMinHeight = 100;
+            int lowlandMinHeight = 40;
+            int beachMinHeight = 30;
+            int shallowWaterMinHeight = 10; // Anything lower is deep water
+
+            //Moistures range from 0-255
+            int wetlandsMinMoisture = 200;
+            int grasslandsMinMoisture = 130;
+            int dryGrasslandsMinMoisture = 70;
+            int savannaMinMoisture = 35; // Anything lower is desert
+
             //Color each cell according to its height and moisture
             for (int x = 0; x < worldSize; x++)
             {
@@ -268,8 +282,8 @@ namespace WorldBuilder
 
                     //Color each cell based on its height and moisture
 
-                    //Snow
-                    if (heightMap[x, y] >= 200)
+                    //Snowcap
+                    if (heightMap[x, y] >= snowCapMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -279,8 +293,8 @@ namespace WorldBuilder
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                         }
                     }
-                    //Mountainous high
-                    else if (heightMap[x, y] >= 175)
+                    //High mountains
+                    else if (heightMap[x, y] >= highMountainMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -291,7 +305,7 @@ namespace WorldBuilder
                         }
                     }
                     //Mountainous low
-                    else if (heightMap[x, y] >= 150)
+                    else if (heightMap[x, y] >= lowMountainMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -301,11 +315,11 @@ namespace WorldBuilder
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                         }
                     }
-                    //Grassy/Desert
-                    else if (heightMap[x, y] >= 70)
+                    //Lowlands
+                    else if (heightMap[x, y] >= lowlandMinHeight)
                     {
-                        //High moisture grass
-                        if (moisture[x, y] >= 191)
+                        //Wetlands
+                        if (moisture[x, y] >= wetlandsMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -315,8 +329,8 @@ namespace WorldBuilder
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                             }
                         }
-                        //Medium moisture grass
-                        else if (moisture[x, y] >= 128)
+                        //Grasslands
+                        else if (moisture[x, y] >= grasslandsMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -326,8 +340,8 @@ namespace WorldBuilder
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                             }
                         }
-                        //Low moisture grass
-                        else if (moisture[x, y] >= 63)
+                        //Dry grasslands
+                        else if (moisture[x, y] >= dryGrasslandsMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -337,8 +351,8 @@ namespace WorldBuilder
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                             }
                         }
-                        //High moisture desert
-                        else if (moisture[x, y] >= 32)
+                        //Savanna
+                        else if (moisture[x, y] >= savannaMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -361,7 +375,7 @@ namespace WorldBuilder
                         }
                     }
                     //Beach
-                    else if (heightMap[x, y] >= 60)
+                    else if (heightMap[x, y] >= beachMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -372,7 +386,7 @@ namespace WorldBuilder
                         }
                     }
                     //Shallow water
-                    else if (heightMap[x, y] >= 30)
+                    else if (heightMap[x, y] >= shallowWaterMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
