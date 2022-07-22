@@ -27,18 +27,17 @@ namespace WorldBuilder
         int percentArable = 45;
 
         //World map variables
-        WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
         static int worldSize = 1024; //How many cells wide the world is
-        static float[,] heightMap = new float[worldSize, worldSize];
-        static float[,] moisture = new float[worldSize, worldSize];
-        static float[,] square = new float[worldSize, worldSize];
+        static float[,] heightMap;
+        static float[,] moisture;
+        static float[,] square;
 
         //World map Image variables
-        MapColors mapColors = new MapColors(); //Byte data used for colors in the map
         public static int cellSize = 1; //How many pixels one cell in the grid is
         public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
         static int imageWidth = worldSize * cellSize; //How many pixels wide the image is
         static int imageHeight = worldSize * cellSize; //How many pixels high the image is
+        WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
 
         public MainWindow()
         {
@@ -162,6 +161,12 @@ namespace WorldBuilder
             txtblockOutputPopulation.Text = totalPopulationString;
         }
 
+        //Update map size when text input is changed
+        private void txtWorldSize_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Int32.TryParse(txtWorldSize.Text, out worldSize);
+        }
+
         //Function for calculating random noise ata given point with a given number of octaves
         private float noiseWithOctaves(int x, int y, int octaves, float persistence, float scale, int low, int high)
         {
@@ -187,6 +192,19 @@ namespace WorldBuilder
 
         private void btnDrawTest_Click(object sender, RoutedEventArgs e)
         {
+            imageWidth = worldSize * cellSize;
+            imageHeight = worldSize * cellSize;
+
+            wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
+            heightMap = new float[worldSize, worldSize];
+            moisture = new float[worldSize, worldSize];
+            square = new float[worldSize, worldSize];
+
+            image.Width = imageWidth;
+            image.Height = imageHeight;
+            image.Source = wb;
+
+
             //New seed every time
             byte[] noiseSeed = new byte[512];
             rnd.NextBytes(noiseSeed);
@@ -410,12 +428,6 @@ namespace WorldBuilder
                     wb.WritePixels(rect, bytes, stride, 0);
                 }
             }
-
-            image.Width = imageWidth;
-            image.Height = imageHeight;
-            image.Source = wb;
-
-
         }
 
         private void btnSaveMap_Click(object sender, RoutedEventArgs e)
@@ -424,7 +436,7 @@ namespace WorldBuilder
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = "World"; //Default file name
             dlg.DefaultExt = ".png"; //Default file extension
-            dlg.Filter = "Text documents (.png)|*.png"; //Filter files by extension
+            dlg.Filter = "PNG |*.png"; //Filter files by extension
 
             //Show save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
@@ -442,5 +454,7 @@ namespace WorldBuilder
                 }
             }
         }
+
+        
     }
 }
