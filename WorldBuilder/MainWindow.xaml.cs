@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
 using SimplexNoise;
 using System.Diagnostics;
+using System.IO;
 
 namespace WorldBuilder
 {
@@ -26,6 +27,7 @@ namespace WorldBuilder
         int percentArable = 45;
 
         //World map variables
+        WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
         static int worldSize = 1024; //How many cells wide the world is
         static float[,] heightMap = new float[worldSize, worldSize];
         static float[,] moisture = new float[worldSize, worldSize];
@@ -185,9 +187,6 @@ namespace WorldBuilder
 
         private void btnDrawTest_Click(object sender, RoutedEventArgs e)
         {
-            //Create a new bitmap for drawing the world
-            WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 96, 96, PixelFormats.Bgra32, null);
-
             //New seed every time
             byte[] noiseSeed = new byte[512];
             rnd.NextBytes(noiseSeed);
@@ -258,18 +257,18 @@ namespace WorldBuilder
 
             //Define values for heights and moistures for different biomes
             //Heights range from 0-255
-            int snowCapMinHeight = 175;
-            int highMountainMinHeight = 150;
-            int lowMountainMinHeight = 100;
+            int snowCapMinHeight = 160;
+            int highMountainMinHeight = 140;
+            int lowMountainMinHeight = 120;
             int lowlandMinHeight = 40;
             int beachMinHeight = 30;
             int shallowWaterMinHeight = 10; // Anything lower is deep water
 
             //Moistures range from 0-255
             int wetlandsMinMoisture = 200;
-            int grasslandsMinMoisture = 130;
+            int grasslandsMinMoisture = 150;
             int dryGrasslandsMinMoisture = 70;
-            int savannaMinMoisture = 35; // Anything lower is desert
+            int savannaMinMoisture = 50; // Anything lower is desert
 
             //Color each cell according to its height and moisture
             for (int x = 0; x < worldSize; x++)
@@ -415,6 +414,33 @@ namespace WorldBuilder
             image.Width = imageWidth;
             image.Height = imageHeight;
             image.Source = wb;
+
+
+        }
+
+        private void btnSaveMap_Click(object sender, RoutedEventArgs e)
+        {
+            //Create a save file dialog
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "World"; //Default file name
+            dlg.DefaultExt = ".png"; //Default file extension
+            dlg.Filter = "Text documents (.png)|*.png"; //Filter files by extension
+
+            //Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            //Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+                using (FileStream stream = new FileStream(filename, FileMode.Create))
+                {
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(wb.Clone())); //Use a clone of the image control as the source of data
+                    encoder.Save(stream);
+                }
+            }
         }
     }
 }
