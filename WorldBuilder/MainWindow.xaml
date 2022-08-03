@@ -221,9 +221,21 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="btnDrawTest" Content="Draw" HorizontalAlignment="Left" Margin="48,42,0,0" VerticalAlignment="Top" Click="btnDrawTest_Click"/>
-                <Image x:Name="image" HorizontalAlignment="Left" Height="500" Margin="131,0,0,0" VerticalAlignment="Top" Width="500"/>
+                <Image x:Name="image" HorizontalAlignment="Left" Height="500" Margin="203,0,0,0" VerticalAlignment="Top" Width="500"/>
                 <Button x:Name="btnSaveMap" Content="Save Map" HorizontalAlignment="Left" Margin="36,86,0,0" VerticalAlignment="Top" Click="btnSaveMap_Click"/>
-                <TextBox x:Name="txtWorldSize" HorizontalAlignment="Left" Margin="10,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" Text="1024" TextChanged="txtWorldSize_TextChanged"/>
+                <TextBox x:Name="txtWorldSize" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" Text="1024" TextChanged="txtWorldSize_TextChanged"/>
+                <TextBox x:Name="txtOctaves" HorizontalAlignment="Left" Margin="10,191,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" Text="10" TextChanged="txtOctaves_TextChanged"/>
+                <Label x:Name="lblWorldSize" Content="World Size" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left"/>
+                <Label x:Name="lblOctaves" Content="Octaves" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left"/>
+                <Slider x:Name="slAmplitude" HorizontalAlignment="Left" Margin="10,240,0,0" VerticalAlignment="Top" Width="120" Minimum="0.0001" Maximum="0.2" SmallChange="0.001" LargeChange="0.01" Value="0.1" TickPlacement="None" Ticks="{x:Null}" TickFrequency="0.001" ValueChanged="slAmplitude_ValueChanged"/>
+                <TextBox x:Name="txtAmplitude" HorizontalAlignment="Left" Margin="10,263,0,0" TextWrapping="Wrap" Text="{Binding Value, ElementName=slAmplitude, StringFormat=\{0:F4\}}" VerticalAlignment="Top" Width="120"/>
+                <Label Content="Amplitude" HorizontalAlignment="Left" Margin="10,214,0,0" VerticalAlignment="Top"/>
+                <Slider x:Name="slPersistence" HorizontalAlignment="Left" Margin="10,312,0,0" VerticalAlignment="Top" Width="120" Minimum="0.01" Maximum="0.99" SmallChange="0.01" LargeChange="0.01" Value="0.5" TickPlacement="None" Ticks="{x:Null}" TickFrequency="0.01" ValueChanged="slPersistence_ValueChanged"/>
+                <TextBox x:Name="txtPersistence" HorizontalAlignment="Left" Margin="10,335,0,0" TextWrapping="Wrap" Text="{Binding Value, ElementName=slPersistence, StringFormat=\{0:F2\}}" VerticalAlignment="Top" Width="120"/>
+                <Label Content="Persistence" HorizontalAlignment="Left" Margin="10,286,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="radioBorderNone" Content="No Border" HorizontalAlignment="Left" Margin="10,376,0,0" VerticalAlignment="Top" GroupName="groupBorders" IsChecked="True"/>
+                <RadioButton x:Name="radioBorderSquare" Content="Square Border" HorizontalAlignment="Left" Margin="10,391,0,0" VerticalAlignment="Top" GroupName="groupBorders"/>
+                <RadioButton x:Name="radioBorderCircle" Content="Circle Border" HorizontalAlignment="Left" Margin="10,406,0,0" VerticalAlignment="Top" GroupName="groupBorders"/>
             </Grid>
         </TabItem>
     </TabControl>
