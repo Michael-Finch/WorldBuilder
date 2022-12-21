@@ -141,6 +141,7 @@ namespace WorldBuilder
         {
             calculateKingdomPhysicalArea();
             calculateKingdomTotalPopulation();
+            calculateKingdomSettlements();
         }
 
         //Do calculations for kingdom's physical area and display information
@@ -160,10 +161,35 @@ namespace WorldBuilder
         private void calculateKingdomTotalPopulation()
         {
             int totalPopulation = physicalArea * populationDensity;
-
             string totalPopulationString = kingdomName + " has a total population of " + totalPopulation.ToString() + " people.";
 
             txtblockOutputPopulation.Text = totalPopulationString;
+        }
+
+        //Do calculations for the kingdom's settlements and display information
+        private void calculateKingdomSettlements()
+        {
+            int totalPopulation = physicalArea * populationDensity;
+            int remainingPopulation = totalPopulation;
+            double populationRoot = Math.Sqrt(totalPopulation);
+            double modifier = (rnd.Next(1, 5) + rnd.Next(1, 5) + 10); //Between 12-20, average of 15
+
+            //The population of the largest settlement = the square root of the kingdom's total population multiplied by a random modifier
+            int largestPopulation = (int)(populationRoot * modifier);
+            remainingPopulation -= largestPopulation;
+
+            //The second largest settlement will be 20-80% the size of the largest
+            modifier = (rnd.Next(1, 5) + rnd.Next(1, 5)) * 0.1; //Between 0.2-0.8, average of 0.5
+            int secondLargestPopulation = (int)(largestPopulation * modifier);
+            remainingPopulation -= secondLargestPopulation;
+
+            string settlementsString = "The largest settlement has a population of " + largestPopulation + " people. " +
+                                        "The second largest has a population of " + secondLargestPopulation + " people. " +
+                                        "The remaining " + remainingPopulation + " people live in numerous small towns, villages, " +
+                                        "isolated dwellings, etc.";
+
+            txtblockOutputSettlements.Text = settlementsString;
+
         }
 
         //Update map size when text input is changed
