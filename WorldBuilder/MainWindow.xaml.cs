@@ -142,6 +142,7 @@ namespace WorldBuilder
             calculateKingdomPhysicalArea();
             calculateKingdomTotalPopulation();
             calculateKingdomSettlements();
+            calculateKingdomCastles();
         }
 
         //Do calculations for kingdom's physical area and display information
@@ -184,12 +185,34 @@ namespace WorldBuilder
             remainingPopulation -= secondLargestPopulation;
 
             string settlementsString = "The largest settlement has a population of " + largestPopulation + " people. " +
-                                        "The second largest has a population of " + secondLargestPopulation + " people. " +
-                                        "The remaining " + remainingPopulation + " people live in numerous small towns, villages, " +
-                                        "isolated dwellings, etc.";
+                                       "The second largest has a population of " + secondLargestPopulation + " people. " +
+                                       "The remaining " + remainingPopulation + " people live in numerous small towns, villages, " +
+                                       "isolated dwellings, etc.";
 
             txtblockOutputSettlements.Text = settlementsString;
 
+        }
+
+        //Do calculations for the kingdom's castles and display information
+        private void calculateKingdomCastles()
+        {
+            int totalPopulation = physicalArea * populationDensity;
+
+            //Calculate the number of ruined castles
+            int ruinedCastlesTotal = (int)(Math.Sqrt(kingdomAge) * (totalPopulation / 5000000f));
+            int ruinedCastlesCivilized = (int)(0.75 * ruinedCastlesTotal);
+            int ruinedCastlesWilderness = ruinedCastlesTotal - ruinedCastlesCivilized;
+
+            //Calculate the number of active castles
+            int activeCastlesTotal = totalPopulation / 50000;
+            int activeCastlesCivilized = (int)(0.75 * activeCastlesTotal);
+            int activeCastlesWilderness = activeCastlesTotal - activeCastlesCivilized;
+
+            string castlesString = kingdomName + " has " + activeCastlesTotal + " active castles and " + ruinedCastlesTotal + " ruined castles. Of these, " +
+                                   activeCastlesCivilized + " active castles and " + ruinedCastlesCivilized + " ruined castles are in civilized lands, and " +
+                                   activeCastlesWilderness + " active castles and " + ruinedCastlesWilderness + " ruined castles are in the wilderness, along borders, etc.";
+
+            txtblockOutputCastles.Text = castlesString;
         }
 
         //Update map size when text input is changed
