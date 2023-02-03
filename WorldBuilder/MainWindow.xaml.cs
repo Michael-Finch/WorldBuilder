@@ -19,20 +19,21 @@ namespace WorldBuilder
     {
         //----------------------------------------------GENERAL----------------------------------------------
 
-        //Initializing the window
+        Kingdom kingdom = new Kingdom();
+
+        //Random number generator
+        Random rnd = new Random();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            //Populate textboxes with reasonable defaults
-            txtKingdomName.Text = kingdomName;
-            txtPhysicalArea.Text = physicalArea.ToString();
+            //Populate window controls with reasonable defaults
+            txtKingdomName.Text = kingdom.Name;
+            txtPhysicalArea.Text = kingdom.PhysicalArea.ToString();
             cmbPopulationDensity.SelectedIndex = 3;
-            txtKingdomAge.Text = kingdomAge.ToString();
+            txtKingdomAge.Text = kingdom.Age.ToString();
         }
-
-        //Random number generator
-        Random rnd = new Random();
 
         //Ensure certain textboxes only accept numeric input
         private void txtEnsureNumeric(object sender, TextCompositionEventArgs e)
@@ -41,19 +42,14 @@ namespace WorldBuilder
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        //----------------------------------------------KINGDOM----------------------------------------------
-        //Variables describing the kingdom
-        string kingdomName = "The Kingdom";
-        int physicalArea = 150000;
-        int populationDensity = 80;
-        int kingdomAge = 500;
-        int percentArable = 45;
+        //----------------------------------------------KINGDOM TAB----------------------------------------------
+        
 
         //Update output as kindgom name is changed
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            kingdomName = txtKingdomName.Text;
-            lblDisplayKingdomName.Content = kingdomName;
+            kingdom.Name = txtKingdomName.Text;
+            lblDisplayKingdomName.Content = kingdom.Name;
 
             //Update output
             updateKingdomOutput();
@@ -62,7 +58,11 @@ namespace WorldBuilder
         //Update output as physical area is changed
         private void txtPhysicalArea_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Int32.TryParse(txtPhysicalArea.Text, out physicalArea);
+            int result;
+            if (Int32.TryParse(txtPhysicalArea.Text, out result))
+            {
+                kingdom.PhysicalArea = result;
+            }
 
             //Update output
             updateKingdomOutput();
@@ -71,7 +71,11 @@ namespace WorldBuilder
         //Update output as kingdom age is changed
         private void txtKingdomAge_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Int32.TryParse(txtKingdomAge.Text, out kingdomAge);
+            int result;
+            if(Int32.TryParse(txtKingdomAge.Text, out result))
+            {
+                kingdom.Age = result;
+            }
 
             //Update output
             updateKingdomOutput();
@@ -87,37 +91,37 @@ namespace WorldBuilder
             //Update the population density and determine an appropriate percentage of arable land
             if (densitySelection.Equals("Desolate"))
             {
-                populationDensity = 20;
-                percentArable = rnd.Next(11, 21);
+                kingdom.PopulationDensity = 20;
+                kingdom.PercentArable = rnd.Next(11, 21);
             }
             else if (densitySelection.Equals("Low"))
             {
-                populationDensity = 40;
-                percentArable = rnd.Next(21, 31);
+                kingdom.PopulationDensity = 40;
+                kingdom.PercentArable = rnd.Next(21, 31);
             }
             else if (densitySelection.Equals("Settled"))
             {
-                populationDensity = 60;
-                percentArable = rnd.Next(31, 44);
+                kingdom.PopulationDensity = 60;
+                kingdom.PercentArable = rnd.Next(31, 44);
             }
             else if (densitySelection.Equals("Average"))
             {
-                populationDensity = 80;
-                percentArable = rnd.Next(44, 55);
+                kingdom.PopulationDensity = 80;
+                kingdom.PercentArable = rnd.Next(44, 55);
             }
             else if (densitySelection.Equals("High"))
             {
-                populationDensity = 100;
-                percentArable = rnd.Next(55, 66);
+                kingdom.PopulationDensity = 100;
+                kingdom.PercentArable = rnd.Next(55, 66);
             }
             else if (densitySelection.Equals("Maximum"))
             {
-                populationDensity = 120;
-                percentArable = rnd.Next(66, 76);
+                kingdom.PopulationDensity = 120;
+                kingdom.PercentArable = rnd.Next(66, 76);
             }
 
             //Update label
-            lblDisplayPopulationDensity.Content = "(" + populationDensity.ToString() + " persons per sq. mile)";
+            lblDisplayPopulationDensity.Content = "(" + kingdom.PopulationDensity.ToString() + " persons per sq. mile)";
 
             //Update output
             updateKingdomOutput();
@@ -126,81 +130,19 @@ namespace WorldBuilder
         //Update output text blocks
         private void updateKingdomOutput()
         {
-            calculateKingdomPhysicalArea();
-            calculateKingdomTotalPopulation();
-            calculateKingdomSettlements();
-            calculateKingdomCastles();
+            txtblockOutputPhysicalArea.Text = kingdom.CalculatePhysicalArea();
+            txtblockOutputPopulation.Text = kingdom.calculateTotalPopulation();
+            txtblockOutputSettlements.Text = kingdom.calculateSettlements();
+            txtblockOutputCastles.Text = kingdom.calculateCastles();
         }
 
-        //Do calculations for kingdom's physical area and display information
-        private void calculateKingdomPhysicalArea()
-        {
-            double arableLand = (double)physicalArea * percentArable / 100;
-            double wilderness = physicalArea - arableLand;
+        
 
-            string physicalAreaString = kingdomName + " covers an area of " + physicalArea.ToString() + " square miles. Of this, " +
-                                        percentArable.ToString() + "% (" + arableLand.ToString() + " square miles) is arable land, and " +
-                                        (100 - percentArable).ToString() + "% (" + wilderness.ToString() + " square miles) is wilderness.";
+        
 
-            txtblockOutputPhysicalArea.Text = physicalAreaString;
-        }
+        
 
-        //Do calculations for kingdom's total population and display information
-        private void calculateKingdomTotalPopulation()
-        {
-            int totalPopulation = physicalArea * populationDensity;
-            string totalPopulationString = kingdomName + " has a total population of " + totalPopulation.ToString() + " people.";
-
-            txtblockOutputPopulation.Text = totalPopulationString;
-        }
-
-        //Do calculations for the kingdom's settlements and display information
-        private void calculateKingdomSettlements()
-        {
-            int totalPopulation = physicalArea * populationDensity;
-            int remainingPopulation = totalPopulation;
-            double populationRoot = Math.Sqrt(totalPopulation);
-            double modifier = (rnd.Next(1, 5) + rnd.Next(1, 5) + 10); //Between 12-20, average of 15
-
-            //The population of the largest settlement = the square root of the kingdom's total population multiplied by a random modifier
-            int largestPopulation = (int)(populationRoot * modifier);
-            remainingPopulation -= largestPopulation;
-
-            //The second largest settlement will be 20-80% the size of the largest
-            modifier = (rnd.Next(1, 5) + rnd.Next(1, 5)) * 0.1; //Between 0.2-0.8, average of 0.5
-            int secondLargestPopulation = (int)(largestPopulation * modifier);
-            remainingPopulation -= secondLargestPopulation;
-
-            string settlementsString = "The largest settlement has a population of " + largestPopulation + " people. " +
-                                       "The second largest has a population of " + secondLargestPopulation + " people. " +
-                                       "The remaining " + remainingPopulation + " people live in numerous small towns, villages, " +
-                                       "isolated dwellings, etc.";
-
-            txtblockOutputSettlements.Text = settlementsString;
-
-        }
-
-        //Do calculations for the kingdom's castles and display information
-        private void calculateKingdomCastles()
-        {
-            int totalPopulation = physicalArea * populationDensity;
-
-            //Calculate the number of ruined castles
-            int ruinedCastlesTotal = (int)(Math.Sqrt(kingdomAge) * (totalPopulation / 5000000f));
-            int ruinedCastlesCivilized = (int)(0.75 * ruinedCastlesTotal);
-            int ruinedCastlesWilderness = ruinedCastlesTotal - ruinedCastlesCivilized;
-
-            //Calculate the number of active castles
-            int activeCastlesTotal = totalPopulation / 50000;
-            int activeCastlesCivilized = (int)(0.75 * activeCastlesTotal);
-            int activeCastlesWilderness = activeCastlesTotal - activeCastlesCivilized;
-
-            string castlesString = kingdomName + " has " + activeCastlesTotal + " active castles and " + ruinedCastlesTotal + " ruined castles. Of these, " +
-                                   activeCastlesCivilized + " active castles and " + ruinedCastlesCivilized + " ruined castles are in civilized lands, and " +
-                                   activeCastlesWilderness + " active castles and " + ruinedCastlesWilderness + " ruined castles are in the wilderness, along borders, etc.";
-
-            txtblockOutputCastles.Text = castlesString;
-        }
+        
 
         //----------------------------------------------SETTLEMENT----------------------------------------------
         //Variables describing the settlement
@@ -686,6 +628,6 @@ namespace WorldBuilder
             }
         }
 
-
+        
     }
 }
