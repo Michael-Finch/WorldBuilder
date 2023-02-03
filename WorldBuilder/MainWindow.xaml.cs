@@ -5,10 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
-using SimplexNoise;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace WorldBuilder
 {
@@ -21,6 +18,7 @@ namespace WorldBuilder
 
         Kingdom kingdom = new Kingdom();
         Settlement settlement = new Settlement();
+        World world = new World();
 
         //Random number generator
         Random rnd = new Random();
@@ -135,7 +133,7 @@ namespace WorldBuilder
             txtblockOutputCastles.Text = kingdom.calculateCastles();
         }
 
-        //----------------------------------------------SETTLEMENT----------------------------------------------
+        //----------------------------------------------SETTLEMENT TAB----------------------------------------------
         //Update output as settlement name is changed
         private void txtSettlementName_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -168,204 +166,78 @@ namespace WorldBuilder
         }
 
         //----------------------------------------------WORLD----------------------------------------------
-        //World map variables
-        static int worldSize = 1024; //How many cells wide the world is
-        static int octaves = 10; //How many octaves to use in noise generation
-        static float[,] heightMap;
-        static float[,] moistureMap;
-        static float[,] borderMatrix;
+
 
         //World map Image variables
         public static int cellSize = 1; //How many pixels one cell in the grid is
         public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
-        static int imageWidth = worldSize * cellSize; //How many pixels wide the image is
-        static int imageHeight = worldSize * cellSize; //How many pixels high the image is
-        WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
-
-        //Slider variables
-        public float amplitude = 0.005f;
-        public float persistence = 0.5f;
+        static int imageWidth; //How many pixels wide the image is
+        static int imageHeight; //How many pixels high the image is
+        WriteableBitmap wb;
 
         //Update map size when text input is changed
         private void txtWorldSize_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Int32.TryParse(txtWorldSize.Text, out worldSize);
+            int result;
+            if(Int32.TryParse(txtWorldSize.Text, out result))
+            {
+                world.Size = result;
+                world.HeightMap = new float[world.Size, world.Size];
+                world.MoistureMap = new float[world.Size, world.Size];
+                world.BorderMatrix = new float[world.Size, world.Size];
+            }
         }
 
         //Update octaves when text input is changed
         private void txtOctaves_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Int32.TryParse(txtOctaves.Text, out octaves);
+            int result;
+            if(Int32.TryParse(txtOctaves.Text, out result))
+            {
+                world.Octaves = result;
+            }
         }
 
         //Update amplitude when slider is changed
         private void slAmplitude_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            amplitude = (float)slAmplitude.Value;
+            world.Amplitude = (float)slAmplitude.Value;
         }
 
         //Update persistence when slider is changed
         private void slPersistence_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            persistence = (float)slPersistence.Value;
+            world.Persistence = (float)slPersistence.Value;
         }
 
-        //Function for calculating random noise ata given point with a given number of octaves
-        private float noiseWithOctaves(int x, int y, int octaves, float persistence, float amplitude, int low, int high)
+        private void btnDraw_Click(object sender, RoutedEventArgs e)
         {
-            float maxAmp = 0;
-            float amp = 1;
-            float noise = 0;
-
-            for (int i = 0; i < octaves; ++i)
-            {
-                noise += Noise.Generate(x * amplitude, y * amplitude) * amp;
-                maxAmp += amp;
-                amp *= persistence;
-                amplitude *= 2;
-            }
-
-            noise /= maxAmp;
-
-            noise = noise * (high - low) / 2 + (high + low) / 2;
-
-            return noise;
-        }
-
-        private void btnDrawTest_Click(object sender, RoutedEventArgs e)
-        {
-            imageWidth = worldSize * cellSize;
-            imageHeight = worldSize * cellSize;
-
-            wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
-            heightMap = new float[worldSize, worldSize];
-            moistureMap = new float[worldSize, worldSize];
-            borderMatrix = new float[worldSize, worldSize];
+            imageWidth = world.Size * cellSize;
+            imageHeight = world.Size * cellSize;
+            WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
 
             image.Width = imageWidth;
             image.Height = imageHeight;
             image.Source = wb;
 
-            //New seed every time
-            byte[] noiseSeed = new byte[512];
-            rnd.NextBytes(noiseSeed);
-            Noise.perm = noiseSeed;
 
-            //Create a border matrix to subtract from the height map
-            //No border
             if (radioBorderNone.IsChecked == true)
             {
-                for (int x = 0; x < worldSize; ++x)
-                {
-                    for (int y = 0; y < worldSize; ++y)
-                    {
-                        borderMatrix[x, y] = 0;
-                    }
-                }
+                world.generateWorld("none");
             }
-            //Square border
             else if (radioBorderSquare.IsChecked == true)
             {
-                float half = worldSize / 2 + worldSize % 2;
-                for (int x = 0; x < half; ++x)
-                {
-                    for (int y = 0; y < half; ++y)
-                    {
-                        byte a = (byte)(((1 - Math.Min(x, y) / (half - 1)) * 255));
-                        borderMatrix[x, y] = a;
-                        borderMatrix[(worldSize - x) - 1, y] = a;
-                        borderMatrix[(worldSize - x) - 1, (worldSize - y) - 1] = a;
-                        borderMatrix[x, (worldSize - y) - 1] = a;
-                    }
-                }
+                world.generateWorld("square");
             }
-            //Circle border
             else
             {
-                int half = worldSize / 2;
-                int borderDistance = (int)(worldSize * 0.66);
-                float maxDistance = (float)(Math.Sqrt(worldSize * worldSize + worldSize * worldSize));
-                for (int x = 0; x < worldSize; ++x)
-                {
-                    for (int y = 0; y < worldSize; ++y)
-                    {
-                        int adjustedX = x - half;
-                        int adjustedY = y - half;
-                        float distanceFromCenter = (float)(Math.Sqrt(adjustedX * adjustedX + adjustedY * adjustedY));
-                        float matrixValue = (float)((distanceFromCenter / borderDistance) * 255);
-                        borderMatrix[x, y] = matrixValue;
-                    }
-                }
+                world.generateWorld("circle");
             }
-
-
-            //Create a base heightmap for the world, subtract square matrix to make an island
-            for (int x = 0; x < worldSize; x++)
-            {
-                for (int y = 0; y < worldSize; y++)
-                {
-                    float heightValue = noiseWithOctaves(x, y, octaves, persistence, amplitude, 0, 255);
-                    heightValue -= borderMatrix[x, y];
-                    if (heightValue < 0)
-                    {
-                        heightValue = 0;
-                    }
-                    heightMap[x, y] = (byte)heightValue;
-                }
-            }
-
-            //New seed for moisture map
-            rnd.NextBytes(noiseSeed);
-            Noise.perm = noiseSeed;
-
-            //Create a moisture map for the world
-            for (int x = 0; x < worldSize; x++)
-            {
-                for (int y = 0; y < worldSize; y++)
-                {
-                    moistureMap[x, y] = (byte)(noiseWithOctaves(x, y, octaves, persistence, amplitude, 0, 255));
-                }
-            }
-
-            //Debug, uncomment to draw the square matrix
-            /*
-            byte[] bytes = new byte[stride * cellSize];
-            for (int x = 0; x < worldSize; x++)
-            {
-                for (int y = 0; y < worldSize; y++)
-                {
-                    for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                    {
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = (byte)heightMap[x, y];
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = (byte)heightMap[x, y];
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = (byte)heightMap[x, y];
-                        bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                    }
-                    Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
-                    wb.WritePixels(rect, bytes, stride, 0);
-                }
-            }
-            */
-
-            //Define values for heights and moistures for different biomes
-            //Heights range from 0-255
-            int snowCapMinHeight = 160;
-            int highMountainMinHeight = 140;
-            int lowMountainMinHeight = 120;
-            int lowlandMinHeight = 40;
-            int beachMinHeight = 30;
-            int shallowWaterMinHeight = 10; // Anything lower is deep water
-
-            //Moistures range from 0-255
-            int wetlandsMinMoisture = 200;
-            int grasslandsMinMoisture = 150;
-            int dryGrasslandsMinMoisture = 70;
-            int savannaMinMoisture = 50; // Anything lower is desert
 
             //Color each cell according to its height and moisture
-            for (int x = 0; x < worldSize; x++)
+            for (int x = 0; x < world.Size; x++)
             {
-                for (int y = 0; y < worldSize; y++)
+                for (int y = 0; y < world.Size; y++)
                 {
                     //Use an Int32Rect to choose the rectangular region to edit
                     //xy of top left corner plus width and height of edited region
@@ -374,7 +246,7 @@ namespace WorldBuilder
                     //Color each cell based on its height and moisture
 
                     //Snowcap
-                    if (heightMap[x, y] >= snowCapMinHeight)
+                    if (world.HeightMap[x, y] >= world.snowCapMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -385,7 +257,7 @@ namespace WorldBuilder
                         }
                     }
                     //High mountains
-                    else if (heightMap[x, y] >= highMountainMinHeight)
+                    else if (world.HeightMap[x, y] >= world.highMountainMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -396,7 +268,7 @@ namespace WorldBuilder
                         }
                     }
                     //Mountainous low
-                    else if (heightMap[x, y] >= lowMountainMinHeight)
+                    else if (world.HeightMap[x, y] >= world.lowMountainMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -407,10 +279,10 @@ namespace WorldBuilder
                         }
                     }
                     //Lowlands
-                    else if (heightMap[x, y] >= lowlandMinHeight)
+                    else if (world.HeightMap[x, y] >= world.lowlandMinHeight)
                     {
                         //Wetlands
-                        if (moistureMap[x, y] >= wetlandsMinMoisture)
+                        if (world.MoistureMap[x, y] >= world.wetlandsMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -421,7 +293,7 @@ namespace WorldBuilder
                             }
                         }
                         //Grasslands
-                        else if (moistureMap[x, y] >= grasslandsMinMoisture)
+                        else if (world.MoistureMap[x, y] >= world.grasslandsMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -432,7 +304,7 @@ namespace WorldBuilder
                             }
                         }
                         //Dry grasslands
-                        else if (moistureMap[x, y] >= dryGrasslandsMinMoisture)
+                        else if (world.MoistureMap[x, y] >= world.dryGrasslandsMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -443,7 +315,7 @@ namespace WorldBuilder
                             }
                         }
                         //Savanna
-                        else if (moistureMap[x, y] >= savannaMinMoisture)
+                        else if (world.MoistureMap[x, y] >= world.savannaMinMoisture)
                         {
                             for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                             {
@@ -466,7 +338,7 @@ namespace WorldBuilder
                         }
                     }
                     //Beach
-                    else if (heightMap[x, y] >= beachMinHeight)
+                    else if (world.HeightMap[x, y] >= world.beachMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -477,7 +349,7 @@ namespace WorldBuilder
                         }
                     }
                     //Shallow water
-                    else if (heightMap[x, y] >= shallowWaterMinHeight)
+                    else if (world.HeightMap[x, y] >= world.shallowWaterMinHeight)
                     {
                         for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
                         {
@@ -528,7 +400,5 @@ namespace WorldBuilder
                 }
             }
         }
-
-        
     }
 }

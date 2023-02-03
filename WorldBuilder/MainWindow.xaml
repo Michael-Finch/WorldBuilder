@@ -80,10 +80,10 @@
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Map" Margin="-2,-2,-2,0">
+        <TabItem Header="World" Margin="-2,-2,-2,0">
             <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Grid x:Name="gridMap">
-                    <Button x:Name="btnDrawTest" Content="Draw" HorizontalAlignment="Left" Margin="48,42,0,0" VerticalAlignment="Top" Click="btnDrawTest_Click"/>
+                    <Button x:Name="btnDraw" Content="Draw" HorizontalAlignment="Left" Margin="48,42,0,0" VerticalAlignment="Top" Click="btnDraw_Click"/>
                     <Image x:Name="image" HorizontalAlignment="Left" Height="500" Margin="203,0,0,0" VerticalAlignment="Top" Width="500"/>
                     <Button x:Name="btnSaveMap" Content="Save Map" HorizontalAlignment="Left" Margin="36,86,0,0" VerticalAlignment="Top" Click="btnSaveMap_Click"/>
                     <TextBox x:Name="txtWorldSize" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" Text="1024" TextChanged="txtWorldSize_TextChanged"/>
