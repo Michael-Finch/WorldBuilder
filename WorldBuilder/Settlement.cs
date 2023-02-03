@@ -88,7 +88,7 @@ namespace WorldBuilder
             int tradesCount = 0;
             foreach (KeyValuePair<string, int> i in SVDictionary)
             {
-                tradesString += string.Format("{0,-15} - {1}          ", i.Key, Population / i.Value);
+                tradesString += string.Format("{0} - {1} ", i.Key, Population / i.Value);
                 if (tradesCount != 0 && tradesCount % 6 == 0)
                 {
                     tradesString += "\n";

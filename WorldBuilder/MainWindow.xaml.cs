@@ -33,6 +33,9 @@ namespace WorldBuilder
             txtPhysicalArea.Text = kingdom.PhysicalArea.ToString();
             cmbPopulationDensity.SelectedIndex = 3;
             txtKingdomAge.Text = kingdom.Age.ToString();
+
+            txtSettlementName.Text = settlement.Name;
+            txtPopulation.Text = settlement.Population.ToString();
         }
 
         //Method to ensure certain textboxes only accept numeric input
