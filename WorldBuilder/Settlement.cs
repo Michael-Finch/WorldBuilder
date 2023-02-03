@@ -23,7 +23,7 @@ namespace WorldBuilder
         //Dictionary pairing the names and Support-Values (SVs) for trades in the settlement
         //An SV is the number of citizens in a settlement required for there to be 1 of that trade
         //For example, for every 800 people in a settlement, there will be 1 baker in that settlement
-        Dictionary<string, int> SVDictionary = new Dictionary<string, int>()
+        Dictionary<string, int> TradesDictionary = new Dictionary<string, int>()
         {
             {"Bakers", 800},            {"Barbers", 350},           {"Bathers", 1900},          {"Beer-sellers", 1400}, {"Blacksmiths", 1500},      {"Bleachers", 2100},
             {"Bookbinders", 3000},      {"Booksellers", 6300},      {"Buckle Makers", 1400},    {"Butchers", 1200},     {"Carpenters", 550},        {"Chandlers", 700},
@@ -84,7 +84,7 @@ namespace WorldBuilder
         {
             string tradesString = "";
             int tradesCount = 0;
-            foreach (KeyValuePair<string, int> i in SVDictionary)
+            foreach (KeyValuePair<string, int> i in TradesDictionary)
             {
                 tradesString += string.Format("{0} - {1} ", i.Key, Population / i.Value);
                 if (tradesCount != 0 && tradesCount % 6 == 0)
