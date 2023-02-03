@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using SimplexNoise;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WorldBuilder
 {
@@ -205,9 +206,10 @@ namespace WorldBuilder
         //Variables describing the settlement
         string settlementName = "The Settlement";
         int settlementPopulation = 10000;
+        string settlementType = "city";
 
-        //Dictionary pairing the names and Support-Values (SVs) for professions in the settlement
-        //An SV is the number of citizens in a settlement required for there to be 1 of that profession
+        //Dictionary pairing the names and Support-Values (SVs) for trades in the settlement
+        //An SV is the number of citizens in a settlement required for there to be 1 of that trade
         //For example, for every 800 people in a settlement, there will be 1 baker in that settlement
         Dictionary<string, int> SVDictionary = new Dictionary<string, int>()
         {
@@ -221,8 +223,8 @@ namespace WorldBuilder
             {"Shoemakers", 150},        {"Spice Merchants", 1400},  {"Tailors", 250},           {"Tanners", 2000},      {"Taverns", 400},           {"Watercarriers", 850},
             {"Weavers", 600},           {"Wine-sellers", 900},      {"Woodcarvers", 2400},      {"Woodsellers", 2400}
         };
-        //Dictionary pairing the names of and number of each profession in the settlement
-        Dictionary<string, int> professionDictionary = new Dictionary<string, int>()
+        //Dictionary pairing the names of and number of each trade in the settlement
+        Dictionary<string, int> tradesDictionary = new Dictionary<string, int>()
         {
             {"Bakers", 0},              {"Barbers", 0},             {"Bathers", 0},             {"Beer-sellers", 0},    {"Blacksmiths", 0},         {"Bleachers", 0},
             {"Bookbinders", 0},         {"Booksellers", 0},         {"Buckle Makers", 0},       {"Butchers", 0},        {"Carpenters", 0},          {"Chandlers", 0},
@@ -234,6 +236,106 @@ namespace WorldBuilder
             {"Shoemakers", 0},          {"Spice Merchants", 0},     {"Tailors", 0},             {"Tanners", 0},         {"Taverns", 0},             {"Watercarriers", 0},
             {"Weavers", 0},             {"Wine-sellers", 0},        {"Woodcarvers", 0},         {"Woodsellers", 0}
         };
+
+        private void txtSettlementName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            settlementName = txtSettlementName.Text;
+            lblDisplaySettlementName.Content = settlementName;
+
+            //Update output
+            updateSettlementOutput();
+        }
+
+        private void txtPopulation_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Int32.TryParse(txtPopulation.Text, out settlementPopulation);
+
+            //Update output
+            updateSettlementOutput();
+        }
+
+        //Update output text blocks
+        private void updateSettlementOutput()
+        {
+            calculateSettlementSize();
+            calculateSettlementTrades();
+            calculateSettlementMisc();
+        }
+
+        private void calculateSettlementSize()
+        {
+            //Determine what type of settlement this is
+            //0-1000 people is a village
+            if(settlementPopulation <= 1000)
+            {
+                settlementType = "village";
+            }
+            //1001-8000 people is a town
+            else if(settlementPopulation <= 8000)
+            {
+                settlementType = "town";
+            }
+            //8001+ people is a city
+            else
+            {
+                settlementType = "city";
+            }
+
+            //To randomize settlement density, roll 7d4 and drop the highest 2, and multiply the result by 15
+            //Average is about 225 people/hectare
+            //Divide this number by 2.5 to get people/acre
+            List<int> settlementDensityDice = new List<int>();
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Add(rnd.Next(1, 5));
+            settlementDensityDice.Remove(settlementDensityDice.Max());
+            settlementDensityDice.Remove(settlementDensityDice.Max());
+            int settlementDensity = (int)(settlementDensityDice.Sum() * 15 / 2.5);
+
+            int acres = settlementPopulation / settlementDensity;
+
+            string settlementSizeString = "The " + settlementType + " of " + settlementName + " covers approximately " + acres + " acres " +
+                                          "with a population of " + settlementPopulation + " people.";
+
+            txtblockOutputSize.Text = settlementSizeString;
+        }
+
+        private void calculateSettlementTrades()
+        {
+            string tradesString = "";
+            int tradesCount = 0;
+            foreach(KeyValuePair<string, int> i in SVDictionary)
+            {
+                tradesString += string.Format("{0,-15} - {1}          ", i.Key, settlementPopulation / i.Value);
+                if(tradesCount != 0 && tradesCount % 6 == 0)
+                {
+                    tradesString += "\n";
+                }    
+            }
+
+            txtblockOutputTrades.Text = tradesString;
+        }
+
+        private void calculateSettlementMisc()
+        {
+            int nobleHouseholds = settlementPopulation / 200;
+            int guards = settlementPopulation / 150;
+            int lawyers = settlementPopulation / 650;
+            int clergy = settlementPopulation / 40;
+            int priests = clergy / 25;
+            int placesOfWorship = settlementPopulation / 400;
+
+            string miscString = "There are " + nobleHouseholds + " noble houses in " + settlementName + ", and the " + settlementType + " is guarded" +
+                                " by " + guards + " guardsmen. " + settlementName + " has " + lawyers + " advocates to assist its citizens in legal matters." +
+                                " For spiritual matters, the " + settlementType + " has " + clergy + " clergymen and " + priests + " priests serving " +
+                                placesOfWorship + " temples and other places of worship.";
+
+            txtblockOutputMisc.Text = miscString;
+        }
 
         //----------------------------------------------WORLD----------------------------------------------
         //World map variables
@@ -597,6 +699,6 @@ namespace WorldBuilder
             }
         }
 
-
+        
     }
 }

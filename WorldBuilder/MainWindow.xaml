@@ -55,8 +55,13 @@
             </Grid>
         </TabItem>
         <TabItem Header="Settlement">
-            <Grid x:Name="gridSettlement" Height="627">
-                <Grid Margin="0,254,0,0">
+            <Grid x:Name="gridSettlement" Height="627" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <Label x:Name="lblInputSettlementName" Content="Settlement Name" HorizontalAlignment="Left" Margin="151,147,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="lblInputPopulation" Content="Population" HorizontalAlignment="Left" Margin="186,186,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtSettlementName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272" TextChanged="txtSettlementName_TextChanged"/>
+                <TextBox x:Name="txtPopulation" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric" TextChanged="txtPopulation_TextChanged"/>
+                <Label x:Name="lblDisplaySettlementName" Content="Settlement Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24"/>
+                <Grid Margin="0,366,0,10" ScrollViewer.CanContentScroll="True">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -66,153 +71,13 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="Size" HorizontalAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Top" Grid.RowSpan="2"/>
-                    <Label Content="Tradesmen" HorizontalAlignment="Right" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.RowSpan="2"/>
-                    <Label Content="Other" HorizontalAlignment="Right" Margin="0,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Text" VerticalAlignment="Top" Margin="10,15,0,0"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" TextWrapping="Wrap" Text="Text" VerticalAlignment="Top" Margin="10,15,0,0"/>
-                    <Grid Grid.Column="1" Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="Bakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBakers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Barbers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBarbers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Bathers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBathers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Bee-sellers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBeesellers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Blacksmiths" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBlacksmiths" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Bleachers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBleachers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Bookbinders" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBookbinders" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Booksellers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBooksellers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Buckle Makers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBucklemakers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-
-                        <Label Grid.Column="2" Content="Butchers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblButchers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Carpenters" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label x:Name="tblCarpenters" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Chandlers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label x:Name="tblChandlers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Chicken Butchers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblChickenButchers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Coopers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label x:Name="tblCoopers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Copyists" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label x:Name="tblCopyists" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Cutlers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label x:Name="tblCutlers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Doctors" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label x:Name="tblDoctors" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label Grid.Column="2" Content="Fishmongers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-                        <Label x:Name="tblFishmongers" Grid.Column="3" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-
-                        <Label Grid.Column="4" Content="Furriers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblFurriers" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Glovemakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label x:Name="tblGlovemakers" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Harness-makers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label x:Name="tblHarnessmakers" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Hatmakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblHatmakers" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Hay Merchants" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label x:Name="tblHaymerchants" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Illuminators" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label x:Name="tblIlluminators" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Inns" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label x:Name="tblInns" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Jewelers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label x:Name="tblJewelers" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label Grid.Column="4" Content="Locksmiths" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-                        <Label x:Name="tblLocksmiths" Grid.Column="5" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-
-                        <Label Grid.Column="6" Content="Magic Shops" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblMagicshops" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Maidservants" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label x:Name="tblMaidservants" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Masons" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label x:Name="tblMasons" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Mercers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblMercers" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Old Clothes" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label x:Name="tblOldclothes" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Painters" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label x:Name="tblPainters" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Pastrycooks" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label x:Name="tblPastrycooks" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Plasterers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label x:Name="tblPlasterers" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label Grid.Column="6" Content="Pursemakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-                        <Label x:Name="tblPursemakers" Grid.Column="7" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-
-                        <Label Grid.Column="8" Content="Roofers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblRoofers" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Ropemakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label x:Name="tblRopemakers" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Rugmakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label x:Name="tblRugmakers" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Saddlers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblSaddlers" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Scabbardmakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label x:Name="tblScabbardmakers" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Sculptors" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label x:Name="tblSculptors" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Shoemakers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label x:Name="tblShoemakers" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Spice Merchants" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label x:Name="tblMerchants" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Top"/>
-                        <Label Grid.Column="8" Content="Tailors" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-                        <Label x:Name="tblTailors" Grid.Column="9" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Top"/>
-
-                        <Label Grid.Column="10" Content="Tanners" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label x:Name="tblTanners" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Top"/>
-                        <Label Grid.Column="10" Content="Taverns" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label x:Name="tblTaverns" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                        <Label Grid.Column="10" Content="Watercarriers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label x:Name="tblWatercarriers" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="10" Content="Weavers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblWeavers" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label Grid.Column="10" Content="Wine-sellers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label x:Name="tblWinesellers" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
-                        <Label Grid.Column="10" Content="Woodcarvers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label x:Name="tblWoodcarvers" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
-                        <Label Grid.Column="10" Content="Woodsellers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                        <Label x:Name="tblWoodsellers" Grid.Column="11" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="6" VerticalAlignment="Top"/>
-                    </Grid>
+                    <Label Content="Size" HorizontalAlignment="Right" Margin="10,10,0,0" VerticalAlignment="Center"/>
+                    <Label Content="Misc." HorizontalAlignment="Right" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Center"/>
+                    <Label Content="Trades" HorizontalAlignment="Right" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="txtblockOutputSize" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
+                    <TextBlock x:Name="txtblockOutputMisc" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,10,0,0"/>
+                    <TextBlock x:Name="txtblockOutputTrades" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" TextWrapping="Wrap" Text="Text" VerticalAlignment="Center" Margin="10,15,0,0" ScrollViewer.CanContentScroll="True"/>
                 </Grid>
-                <Label x:Name="lblInputSettlementName" Content="Settlement Name" HorizontalAlignment="Left" Margin="151,147,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="lblInputPopulation" Content="Population" HorizontalAlignment="Left" Margin="186,186,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtSettlementName" HorizontalAlignment="Left" Margin="258,151,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="272"/>
-                <TextBox x:Name="txtPopulation" HorizontalAlignment="Left" Margin="258,190,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" PreviewTextInput="txtEnsureNumeric"/>
-                <Label x:Name="lblDisplaySettlementName" Content="Settlement Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24"/>
             </Grid>
         </TabItem>
         <TabItem Header="Map" Margin="-2,-2,-2,0">
