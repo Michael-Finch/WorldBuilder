@@ -6,8 +6,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
 using SimplexNoise;
-using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 
 namespace WorldBuilder
 {
@@ -16,34 +16,9 @@ namespace WorldBuilder
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Random number generator
-        Random rnd = new Random();
+        //----------------------------------------------GENERAL----------------------------------------------
 
-        //Variables describing the kingdom
-        string kingdomName = "The Kingdom";
-        int physicalArea = 150000;
-        int populationDensity = 80;
-        int kingdomAge = 500;
-        int percentArable = 45;
-
-        //World map variables
-        static int worldSize = 1024; //How many cells wide the world is
-        static int octaves = 10; //How many octaves to use in noise generation
-        static float[,] heightMap;
-        static float[,] moistureMap;
-        static float[,] borderMatrix;
-
-        //World map Image variables
-        public static int cellSize = 1; //How many pixels one cell in the grid is
-        public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
-        static int imageWidth = worldSize * cellSize; //How many pixels wide the image is
-        static int imageHeight = worldSize * cellSize; //How many pixels high the image is
-        WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
-
-        //Sliders
-        public float amplitude = 0.1f;
-        public float persistence = 0.5f;
-
+        //Initializing the window
         public MainWindow()
         {
             InitializeComponent();
@@ -55,12 +30,23 @@ namespace WorldBuilder
             txtKingdomAge.Text = kingdomAge.ToString();
         }
 
+        //Random number generator
+        Random rnd = new Random();
+
         //Ensure certain textboxes only accept numeric input
         private void txtEnsureNumeric(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+
+        //----------------------------------------------KINGDOM----------------------------------------------
+        //Variables describing the kingdom
+        string kingdomName = "The Kingdom";
+        int physicalArea = 150000;
+        int populationDensity = 80;
+        int kingdomAge = 500;
+        int percentArable = 45;
 
         //Update output as kindgom name is changed
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
@@ -215,6 +201,59 @@ namespace WorldBuilder
             txtblockOutputCastles.Text = castlesString;
         }
 
+        //----------------------------------------------SETTLEMENT----------------------------------------------
+        //Variables describing the settlement
+        string settlementName = "The Settlement";
+        int settlementPopulation = 10000;
+
+        //Dictionary pairing the names and Support-Values (SVs) for professions in the settlement
+        //An SV is the number of citizens in a settlement required for there to be 1 of that profession
+        //For example, for every 800 people in a settlement, there will be 1 baker in that settlement
+        Dictionary<string, int> SVDictionary = new Dictionary<string, int>()
+        {
+            {"Bakers", 800},            {"Barbers", 350},           {"Bathers", 1900},          {"Beer-sellers", 1400}, {"Blacksmiths", 1500},      {"Bleachers", 2100},
+            {"Bookbinders", 3000},      {"Booksellers", 6300},      {"Buckle Makers", 1400},    {"Butchers", 1200},     {"Carpenters", 550},        {"Chandlers", 700},
+            {"Chicken Butchers", 1000}, {"Coopers", 700},           {"Copyists", 2000},         {"Cutlers", 2300},      {"Doctors", 1700},          {"Fishmongers", 1200},
+            {"Furriers", 250},          {"Glovemakers", 2400},      {"Harness-makers", 2000},   {"Hatmakers", 950},     {"Hay Merchants", 2300},    {"Illuminators", 3900},
+            {"Inns", 2000},             {"Jewelers", 400},          {"Locksmiths", 1900},       {"Magic Shops", 2800},  {"Maidservants", 250},      {"Masons", 500},
+            {"Mercers", 700},           {"Old Clothes", 400},       {"Painters", 1500},         {"Pastrycooks", 500},   {"Plasterers", 1400},       {"Pursemakers", 1100},
+            {"Roofers", 1800},          {"Ropemakers", 1900},       {"Rugmakers", 2000},        {"Saddlers", 1000},     {"Scabbardmakers", 850},    {"Sculptors", 2000},
+            {"Shoemakers", 150},        {"Spice Merchants", 1400},  {"Tailors", 250},           {"Tanners", 2000},      {"Taverns", 400},           {"Watercarriers", 850},
+            {"Weavers", 600},           {"Wine-sellers", 900},      {"Woodcarvers", 2400},      {"Woodsellers", 2400}
+        };
+        //Dictionary pairing the names of and number of each profession in the settlement
+        Dictionary<string, int> professionDictionary = new Dictionary<string, int>()
+        {
+            {"Bakers", 0},              {"Barbers", 0},             {"Bathers", 0},             {"Beer-sellers", 0},    {"Blacksmiths", 0},         {"Bleachers", 0},
+            {"Bookbinders", 0},         {"Booksellers", 0},         {"Buckle Makers", 0},       {"Butchers", 0},        {"Carpenters", 0},          {"Chandlers", 0},
+            {"Chicken Butchers", 0},    {"Coopers", 0},             {"Copyists", 0},            {"Cutlers", 0},         {"Doctors", 0},             {"Fishmongers", 0},
+            {"Furriers", 0},            {"Glovemakers", 0},         {"Harness-makers", 0},      {"Hatmakers", 0},       {"Hay Merchants", 0},       {"Illuminators", 0},
+            {"Inns", 0},                {"Jewelers", 0},            {"Locksmiths", 0},          {"Magic Shops", 0},     {"Maidservants", 0},        {"Masons", 0},
+            {"Mercers", 0},             {"Old Clothes", 0},         {"Painters", 0},            {"Pastrycooks", 0},     {"Plasterers", 0},          {"Pursemakers", 0},
+            {"Roofers", 0},             {"Ropemakers", 0},          {"Rugmakers", 0},           {"Saddlers", 0},        {"Scabbardmakers", 0},      {"Sculptors", 0},
+            {"Shoemakers", 0},          {"Spice Merchants", 0},     {"Tailors", 0},             {"Tanners", 0},         {"Taverns", 0},             {"Watercarriers", 0},
+            {"Weavers", 0},             {"Wine-sellers", 0},        {"Woodcarvers", 0},         {"Woodsellers", 0}
+        };
+
+        //----------------------------------------------WORLD----------------------------------------------
+        //World map variables
+        static int worldSize = 1024; //How many cells wide the world is
+        static int octaves = 10; //How many octaves to use in noise generation
+        static float[,] heightMap;
+        static float[,] moistureMap;
+        static float[,] borderMatrix;
+
+        //World map Image variables
+        public static int cellSize = 1; //How many pixels one cell in the grid is
+        public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
+        static int imageWidth = worldSize * cellSize; //How many pixels wide the image is
+        static int imageHeight = worldSize * cellSize; //How many pixels high the image is
+        WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
+
+        //Slider variables
+        public float amplitude = 0.005f;
+        public float persistence = 0.5f;
+
         //Update map size when text input is changed
         private void txtWorldSize_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -282,7 +321,7 @@ namespace WorldBuilder
 
             //Create a border matrix to subtract from the height map
             //No border
-            if(radioBorderNone.IsChecked == true)
+            if (radioBorderNone.IsChecked == true)
             {
                 for (int x = 0; x < worldSize; ++x)
                 {
@@ -326,7 +365,7 @@ namespace WorldBuilder
                     }
                 }
             }
-            
+
 
             //Create a base heightmap for the world, subtract square matrix to make an island
             for (int x = 0; x < worldSize; x++)
@@ -375,7 +414,7 @@ namespace WorldBuilder
                 }
             }
             */
-            
+
             //Define values for heights and moistures for different biomes
             //Heights range from 0-255
             int snowCapMinHeight = 160;
@@ -558,6 +597,6 @@ namespace WorldBuilder
             }
         }
 
-        
+
     }
 }
