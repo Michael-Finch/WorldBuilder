@@ -20,6 +20,7 @@ namespace WorldBuilder
         //----------------------------------------------GENERAL----------------------------------------------
 
         Kingdom kingdom = new Kingdom();
+        Settlement settlement = new Settlement();
 
         //Random number generator
         Random rnd = new Random();
@@ -43,8 +44,6 @@ namespace WorldBuilder
         }
 
         //----------------------------------------------KINGDOM TAB----------------------------------------------
-        
-
         //Update output as kindgom name is changed
         private void txtKingdomName_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -136,48 +135,25 @@ namespace WorldBuilder
             txtblockOutputCastles.Text = kingdom.calculateCastles();
         }
 
-        
-
-        
-
-        
-
-        
-
         //----------------------------------------------SETTLEMENT----------------------------------------------
-        //Variables describing the settlement
-        string settlementName = "The Settlement";
-        int settlementPopulation = 10000;
-        string settlementType = "city";
-
-        //Dictionary pairing the names and Support-Values (SVs) for trades in the settlement
-        //An SV is the number of citizens in a settlement required for there to be 1 of that trade
-        //For example, for every 800 people in a settlement, there will be 1 baker in that settlement
-        Dictionary<string, int> SVDictionary = new Dictionary<string, int>()
-        {
-            {"Bakers", 800},            {"Barbers", 350},           {"Bathers", 1900},          {"Beer-sellers", 1400}, {"Blacksmiths", 1500},      {"Bleachers", 2100},
-            {"Bookbinders", 3000},      {"Booksellers", 6300},      {"Buckle Makers", 1400},    {"Butchers", 1200},     {"Carpenters", 550},        {"Chandlers", 700},
-            {"Chicken Butchers", 1000}, {"Coopers", 700},           {"Copyists", 2000},         {"Cutlers", 2300},      {"Doctors", 1700},          {"Fishmongers", 1200},
-            {"Furriers", 250},          {"Glovemakers", 2400},      {"Harness-makers", 2000},   {"Hatmakers", 950},     {"Hay Merchants", 2300},    {"Illuminators", 3900},
-            {"Inns", 2000},             {"Jewelers", 400},          {"Locksmiths", 1900},       {"Magic Shops", 2800},  {"Maidservants", 250},      {"Masons", 500},
-            {"Mercers", 700},           {"Old Clothes", 400},       {"Painters", 1500},         {"Pastrycooks", 500},   {"Plasterers", 1400},       {"Pursemakers", 1100},
-            {"Roofers", 1800},          {"Ropemakers", 1900},       {"Rugmakers", 2000},        {"Saddlers", 1000},     {"Scabbardmakers", 850},    {"Sculptors", 2000},
-            {"Shoemakers", 150},        {"Spice Merchants", 1400},  {"Tailors", 250},           {"Tanners", 2000},      {"Taverns", 400},           {"Watercarriers", 850},
-            {"Weavers", 600},           {"Wine-sellers", 900},      {"Woodcarvers", 2400},      {"Woodsellers", 2400}
-        };
-
+        //Update output as settlement name is changed
         private void txtSettlementName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            settlementName = txtSettlementName.Text;
-            lblDisplaySettlementName.Content = settlementName;
+            settlement.Name = txtSettlementName.Text;
+            lblDisplaySettlementName.Content = settlement.Name;
 
             //Update output
             updateSettlementOutput();
         }
 
+        //Update output as population is changed
         private void txtPopulation_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Int32.TryParse(txtPopulation.Text, out settlementPopulation);
+            int result;
+            if(Int32.TryParse(txtPopulation.Text, out result))
+            {
+                settlement.Population = result;
+            }
 
             //Update output
             updateSettlementOutput();
@@ -186,84 +162,9 @@ namespace WorldBuilder
         //Update output text blocks
         private void updateSettlementOutput()
         {
-            calculateSettlementSize();
-            calculateSettlementTrades();
-            calculateSettlementMisc();
-        }
-
-        private void calculateSettlementSize()
-        {
-            //Determine what type of settlement this is
-            //0-1000 people is a village
-            if (settlementPopulation <= 1000)
-            {
-                settlementType = "village";
-            }
-            //1001-8000 people is a town
-            else if (settlementPopulation <= 8000)
-            {
-                settlementType = "town";
-            }
-            //8001+ people is a city
-            else
-            {
-                settlementType = "city";
-            }
-
-            //To randomize settlement density, roll 7d4 and drop the highest 2, and multiply the result by 15
-            //Average is about 225 people/hectare
-            //Divide this number by 2.5 to get people/acre
-            List<int> settlementDensityDice = new List<int>();
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Add(rnd.Next(1, 5));
-            settlementDensityDice.Remove(settlementDensityDice.Max());
-            settlementDensityDice.Remove(settlementDensityDice.Max());
-            int settlementDensity = (int)(settlementDensityDice.Sum() * 15 / 2.5);
-
-            int acres = settlementPopulation / settlementDensity;
-
-            string settlementSizeString = "The " + settlementType + " of " + settlementName + " covers approximately " + acres + " acres " +
-                                          "with a population of " + settlementPopulation + " people.";
-
-            txtblockOutputSize.Text = settlementSizeString;
-        }
-
-        private void calculateSettlementTrades()
-        {
-            string tradesString = "";
-            int tradesCount = 0;
-            foreach (KeyValuePair<string, int> i in SVDictionary)
-            {
-                tradesString += string.Format("{0,-15} - {1}          ", i.Key, settlementPopulation / i.Value);
-                if (tradesCount != 0 && tradesCount % 6 == 0)
-                {
-                    tradesString += "\n";
-                }
-            }
-
-            txtblockOutputTrades.Text = tradesString;
-        }
-
-        private void calculateSettlementMisc()
-        {
-            int nobleHouseholds = settlementPopulation / 200;
-            int guards = settlementPopulation / 150;
-            int lawyers = settlementPopulation / 650;
-            int clergy = settlementPopulation / 40;
-            int priests = clergy / 25;
-            int placesOfWorship = settlementPopulation / 400;
-
-            string miscString = "There are " + nobleHouseholds + " noble houses in " + settlementName + ", and the " + settlementType + " is guarded" +
-                                " by " + guards + " guardsmen. " + settlementName + " has " + lawyers + " advocates to assist its citizens in legal matters." +
-                                " For spiritual matters, the " + settlementType + " has " + clergy + " clergymen and " + priests + " priests serving " +
-                                placesOfWorship + " temples and other places of worship.";
-
-            txtblockOutputMisc.Text = miscString;
+            txtblockOutputSize.Text = settlement.calculateSettlementSize();
+            txtblockOutputTrades.Text = settlement.calculateSettlementTrades();
+            txtblockOutputMisc.Text = settlement.calculateSettlementMisc();
         }
 
         //----------------------------------------------WORLD----------------------------------------------

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WorldBuilder"
         mc:Ignorable="d"
-        Title="World Builder" Height="660" Width="1300" Initialized="Window_Initialized" Loaded="Window_Loaded" ContentRendered="Window_ContentRendered">
+        Title="World Builder" Height="660" Width="1300">
     <TabControl>
         <TabItem Header="Kingdom">
             <Grid x:Name="gridKingdom" Height="616">
@@ -28,7 +28,7 @@
                     <ComboBoxItem Content="High"/>
                     <ComboBoxItem Content="Maximum"/>
                 </ComboBox>
-                <Label x:Name="lblDisplayKingdomName" Content="Kingdom Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24" Loaded="lblDisplayKingdomName_Loaded"/>
+                <Label x:Name="lblDisplayKingdomName" Content="Kingdom Name" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontSize="24"/>
                 <Label x:Name="lblSquareMiles" Content="sq. miles" HorizontalAlignment="Left" Margin="386,186,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblDisplayPopulationDensity" Content="(80 persons per sq. mile)" HorizontalAlignment="Left" Margin="386,225,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="lblYears" Content="years" HorizontalAlignment="Left" Margin="386,263,0,0" VerticalAlignment="Top"/>

@@ -17,16 +17,14 @@ namespace WorldBuilder
             PercentArable = 45;
         }
 
-        //Random number generator
-        Random rnd = new Random();
-
         public string Name { get; set; }
         public int PhysicalArea { get; set; }
         public int PopulationDensity { get; set; }
         public int Age { get; set; }
         public int PercentArable { get; set; }
 
-        //Properties
+        //Random number generator
+        Random rnd = new Random();
 
         //Method to do calculations for kingdom's physical area and return a string
         public string CalculatePhysicalArea()
