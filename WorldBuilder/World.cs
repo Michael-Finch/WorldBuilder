@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using SimplexNoise;
 
 namespace WorldBuilder
@@ -47,6 +49,13 @@ namespace WorldBuilder
         public int grasslandsMinMoisture = 150;
         public int dryGrasslandsMinMoisture = 70;
         public int savannaMinMoisture = 50; // Anything lower is desert
+
+        //Image drawing variables
+        public static int cellSize = 1; //How many pixels one cell in the grid is
+        public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
+        public int imageWidth { get; set; } //How many pixels wide the image is
+        public int imageHeight { get; set; } //How many pixels high the image is
+        WriteableBitmap wb;
 
         //Random number generator
         Random rnd = new Random();
@@ -156,6 +165,157 @@ namespace WorldBuilder
                     MoistureMap[x, y] = (byte)(noiseWithOctaves(x, y, Octaves, Persistence, Amplitude, 0, 255));
                 }
             }
+        }
+
+        //Function for creating an image based on world data
+        public WriteableBitmap generateImage()
+        {
+            imageWidth = Size * cellSize;
+            imageHeight = Size * cellSize;
+            WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
+
+            //Color each cell according to its height and moisture
+            for (int x = 0; x < Size; x++)
+            {
+                for (int y = 0; y < Size; y++)
+                {
+                    //Use an Int32Rect to choose the rectangular region to edit
+                    //xy of top left corner plus width and height of edited region
+                    byte[] bytes = new byte[stride * cellSize];
+
+                    //Color each cell based on its height and moisture
+
+                    //Snowcap
+                    if (HeightMap[x, y] >= snowCapMinHeight)
+                    {
+                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 255;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 255;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 255;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //High mountains
+                    else if (HeightMap[x, y] >= highMountainMinHeight)
+                    {
+                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 143;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 162;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 160;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Mountainous low
+                    else if (HeightMap[x, y] >= lowMountainMinHeight)
+                    {
+                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 123;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 142;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 140;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Lowlands
+                    else if (HeightMap[x, y] >= lowlandMinHeight)
+                    {
+                        //Wetlands
+                        if (MoistureMap[x, y] >= wetlandsMinMoisture)
+                        {
+                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 0;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 77;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 40;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //Grasslands
+                        else if (MoistureMap[x, y] >= grasslandsMinMoisture)
+                        {
+                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 20;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 97;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 60;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //Dry grasslands
+                        else if (MoistureMap[x, y] >= dryGrasslandsMinMoisture)
+                        {
+                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 50;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 127;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 90;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //Savanna
+                        else if (MoistureMap[x, y] >= savannaMinMoisture)
+                        {
+                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 69;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 118;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 134;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                        //low moisture desert
+                        else
+                        {
+                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            {
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 194;
+                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                            }
+                        }
+                    }
+                    //Beach
+                    else if (HeightMap[x, y] >= beachMinHeight)
+                    {
+                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 194;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Shallow water
+                    else if (HeightMap[x, y] >= shallowWaterMinHeight)
+                    {
+                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 198;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 82;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 9;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    //Deep water
+                    else
+                    {
+                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        {
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 178;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 62;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 0;
+                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
+                        }
+                    }
+                    Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    wb.WritePixels(rect, bytes, stride, 0);
+                }
+            }
+
+            return wb;
         }
     }
 }

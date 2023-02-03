@@ -15,7 +15,7 @@ namespace WorldBuilder
     public partial class MainWindow : Window
     {
         //----------------------------------------------GENERAL----------------------------------------------
-
+        //Kingdom, Settlement, and World objects
         Kingdom kingdom = new Kingdom();
         Settlement settlement = new Settlement();
         World world = new World();
@@ -23,6 +23,7 @@ namespace WorldBuilder
         //Random number generator
         Random rnd = new Random();
 
+        //Create the main window
         public MainWindow()
         {
             InitializeComponent();
@@ -34,7 +35,7 @@ namespace WorldBuilder
             txtKingdomAge.Text = kingdom.Age.ToString();
         }
 
-        //Ensure certain textboxes only accept numeric input
+        //Method to ensure certain textboxes only accept numeric input
         private void txtEnsureNumeric(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
@@ -165,14 +166,7 @@ namespace WorldBuilder
             txtblockOutputMisc.Text = settlement.calculateSettlementMisc();
         }
 
-        //----------------------------------------------WORLD----------------------------------------------
-
-
-        //World map Image variables
-        public static int cellSize = 1; //How many pixels one cell in the grid is
-        public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
-        static int imageWidth; //How many pixels wide the image is
-        static int imageHeight; //How many pixels high the image is
+        //----------------------------------------------WORLD TAB----------------------------------------------
         WriteableBitmap wb;
 
         //Update map size when text input is changed
@@ -210,17 +204,10 @@ namespace WorldBuilder
             world.Persistence = (float)slPersistence.Value;
         }
 
+        //Generate a new world and draw it
         private void btnDraw_Click(object sender, RoutedEventArgs e)
         {
-            imageWidth = world.Size * cellSize;
-            imageHeight = world.Size * cellSize;
-            WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
-
-            image.Width = imageWidth;
-            image.Height = imageHeight;
-            image.Source = wb;
-
-
+            //Pick what type of border the map has
             if (radioBorderNone.IsChecked == true)
             {
                 world.generateWorld("none");
@@ -234,148 +221,14 @@ namespace WorldBuilder
                 world.generateWorld("circle");
             }
 
-            //Color each cell according to its height and moisture
-            for (int x = 0; x < world.Size; x++)
-            {
-                for (int y = 0; y < world.Size; y++)
-                {
-                    //Use an Int32Rect to choose the rectangular region to edit
-                    //xy of top left corner plus width and height of edited region
-                    byte[] bytes = new byte[stride * cellSize];
-
-                    //Color each cell based on its height and moisture
-
-                    //Snowcap
-                    if (world.HeightMap[x, y] >= world.snowCapMinHeight)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 255;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 255;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 255;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
-                    //High mountains
-                    else if (world.HeightMap[x, y] >= world.highMountainMinHeight)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 143;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 162;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 160;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
-                    //Mountainous low
-                    else if (world.HeightMap[x, y] >= world.lowMountainMinHeight)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 123;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 142;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 140;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
-                    //Lowlands
-                    else if (world.HeightMap[x, y] >= world.lowlandMinHeight)
-                    {
-                        //Wetlands
-                        if (world.MoistureMap[x, y] >= world.wetlandsMinMoisture)
-                        {
-                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                            {
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 0;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 77;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 40;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                            }
-                        }
-                        //Grasslands
-                        else if (world.MoistureMap[x, y] >= world.grasslandsMinMoisture)
-                        {
-                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                            {
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 20;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 97;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 60;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                            }
-                        }
-                        //Dry grasslands
-                        else if (world.MoistureMap[x, y] >= world.dryGrasslandsMinMoisture)
-                        {
-                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                            {
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 50;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 127;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 90;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                            }
-                        }
-                        //Savanna
-                        else if (world.MoistureMap[x, y] >= world.savannaMinMoisture)
-                        {
-                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                            {
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 69;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 118;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 134;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                            }
-                        }
-                        //low moisture desert
-                        else
-                        {
-                            for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                            {
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 194;
-                                bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                            }
-                        }
-                    }
-                    //Beach
-                    else if (world.HeightMap[x, y] >= world.beachMinHeight)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 194;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
-                    //Shallow water
-                    else if (world.HeightMap[x, y] >= world.shallowWaterMinHeight)
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 198;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 82;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 9;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
-                    //Deep water
-                    else
-                    {
-                        for (int i = 0; i < MainWindow.cellSize * MainWindow.cellSize; ++i)
-                        {
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 178;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 62;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 2] = 0;
-                            bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
-                        }
-                    }
-                    Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
-                    wb.WritePixels(rect, bytes, stride, 0);
-                }
-            }
+            //Generate the world and update the image in the window
+            wb = world.generateImage();
+            image.Width = world.imageWidth;
+            image.Height = world.imageHeight;
+            image.Source = wb;
         }
 
+        //Save the currently drawn world
         private void btnSaveMap_Click(object sender, RoutedEventArgs e)
         {
             //Create a save file dialog
