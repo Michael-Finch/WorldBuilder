@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -19,9 +18,6 @@ namespace WorldBuilder
         Kingdom kingdom = new Kingdom();
         Settlement settlement = new Settlement();
         World world = new World();
-
-        //Random number generator
-        Random rnd = new Random();
 
         //Create the main window
         public MainWindow()
@@ -90,36 +86,7 @@ namespace WorldBuilder
             string densitySelection = typeItem.Content.ToString();
 
             //Update the population density and determine an appropriate percentage of arable land
-            if (densitySelection.Equals("Desolate"))
-            {
-                kingdom.PopulationDensity = 20;
-                kingdom.PercentArable = rnd.Next(11, 21);
-            }
-            else if (densitySelection.Equals("Low"))
-            {
-                kingdom.PopulationDensity = 40;
-                kingdom.PercentArable = rnd.Next(21, 31);
-            }
-            else if (densitySelection.Equals("Settled"))
-            {
-                kingdom.PopulationDensity = 60;
-                kingdom.PercentArable = rnd.Next(31, 44);
-            }
-            else if (densitySelection.Equals("Average"))
-            {
-                kingdom.PopulationDensity = 80;
-                kingdom.PercentArable = rnd.Next(44, 55);
-            }
-            else if (densitySelection.Equals("High"))
-            {
-                kingdom.PopulationDensity = 100;
-                kingdom.PercentArable = rnd.Next(55, 66);
-            }
-            else if (densitySelection.Equals("Maximum"))
-            {
-                kingdom.PopulationDensity = 120;
-                kingdom.PercentArable = rnd.Next(66, 76);
-            }
+            kingdom.setDensity(densitySelection);
 
             //Update label
             lblDisplayPopulationDensity.Content = "(" + kingdom.PopulationDensity.ToString() + " persons per sq. mile)";
@@ -131,7 +98,7 @@ namespace WorldBuilder
         //Update output text blocks
         private void updateKingdomOutput()
         {
-            txtblockOutputPhysicalArea.Text = kingdom.CalculatePhysicalArea();
+            txtblockOutputPhysicalArea.Text = kingdom.calculatePhysicalArea();
             txtblockOutputPopulation.Text = kingdom.calculateTotalPopulation();
             txtblockOutputSettlements.Text = kingdom.calculateSettlements();
             txtblockOutputCastles.Text = kingdom.calculateCastles();

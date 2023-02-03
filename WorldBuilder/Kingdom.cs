@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WorldBuilder
 {
@@ -26,8 +22,43 @@ namespace WorldBuilder
         //Random number generator
         Random rnd = new Random();
 
+        //Method to randomly determine kingdom's arable land and update population density
+        public void setDensity(string densityString)
+        {
+            if(densityString.Equals("Desolate"))
+            {
+                PercentArable = rnd.Next(11, 21);
+                PopulationDensity = 20;
+            }
+            else if(densityString.Equals("Low"))
+            {
+                PercentArable = rnd.Next(21, 31);
+                PopulationDensity = 40;
+            }
+            else if (densityString.Equals("Settled"))
+            {
+                PercentArable = rnd.Next(31, 44);
+                PopulationDensity = 60;
+            }
+            else if (densityString.Equals("Average"))
+            {
+                PercentArable = rnd.Next(44, 55);
+                PopulationDensity = 80;
+            }
+            else if (densityString.Equals("High"))
+            {
+                PercentArable = rnd.Next(55, 66);
+                PopulationDensity = 100;
+            }
+            else if (densityString.Equals("Maximum"))
+            {
+                PercentArable = rnd.Next(66, 76);
+                PopulationDensity = 120;
+            }
+        }
+
         //Method to do calculations for kingdom's physical area and return a string
-        public string CalculatePhysicalArea()
+        public string calculatePhysicalArea()
         {
             double arableLand = (double)PhysicalArea * PercentArable / 100;
             double wilderness = PhysicalArea - arableLand;
