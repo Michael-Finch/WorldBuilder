@@ -13,11 +13,12 @@ namespace WorldBuilder
             PercentArable = 45;
         }
 
+        //Properties
         public string Name { get; set; }
         public int PhysicalArea { get; set; }
         public int PopulationDensity { get; set; }
         public int Age { get; set; }
-        public int PercentArable { get; set; }
+        private int PercentArable { get; set; }
 
         //Random number generator
         Random rnd = new Random();

@@ -145,10 +145,7 @@ namespace WorldBuilder
             int result;
             if (Int32.TryParse(txtWorldSize.Text, out result))
             {
-                world.Size = result;
-                world.HeightMap = new float[world.Size, world.Size];
-                world.MoistureMap = new float[world.Size, world.Size];
-                world.BorderMatrix = new float[world.Size, world.Size];
+                world.resize(result);
             }
         }
 

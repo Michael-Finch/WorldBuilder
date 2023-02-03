@@ -20,16 +20,16 @@ namespace WorldBuilder
             BorderMatrix = new float[Size, Size];
         }
 
-        //World variables
+        //Properties
         public int Size { get; set; }//How many cells wide/tall the world is
         public int Octaves { get; set; }//How many rounds of noise to apply to world generation
         public float Amplitude { get; set; }//The "scale" of the noise
         public float Persistence { get; set; }//The "roughness" of the noise
 
         //Maps for noise generation
-        public float[,] HeightMap { get; set; }
-        public float[,] MoistureMap { get; set; }
-        public float[,] BorderMatrix { get; set; }
+        private float[,] HeightMap { get; set; }
+        private float[,] MoistureMap { get; set; }
+        private float[,] BorderMatrix { get; set; }
 
         //Define values for heights and moistures for different biomes
         //Heights range from 0-255
@@ -56,7 +56,16 @@ namespace WorldBuilder
         //Random number generator
         Random rnd = new Random();
 
-        //Function for calculating random noise at a given point with a given number of octaves
+        //Method for resizing the world
+        public void resize(int size)
+        {
+            Size = size;
+            HeightMap = new float[Size, Size];
+            MoistureMap = new float[Size, Size];
+            BorderMatrix = new float[Size, Size];
+        }
+
+        //Method for calculating random noise at a given point with a given number of octaves
         private float noiseWithOctaves(int x, int y, int octaves, float persistence, float amplitude, int low, int high)
         {
             float maxAmp = 0;
