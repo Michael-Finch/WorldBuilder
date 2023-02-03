@@ -14,10 +14,13 @@ namespace WorldBuilder
             Octaves = 10;
             Amplitude = 0.005f;
             Persistence = 0.5f;
+            CellSize = 1;
 
             HeightMap = new float[Size, Size];
             MoistureMap = new float[Size, Size];
             BorderMatrix = new float[Size, Size];
+
+            stride = CellSize * (PixelFormats.Bgra32.BitsPerPixel / 8);
         }
 
         //Properties
@@ -47,8 +50,8 @@ namespace WorldBuilder
         public int savannaMinMoisture = 50; // Anything lower is desert
 
         //Image drawing variables
-        public static int cellSize = 1; //How many pixels one cell in the grid is
-        public static int stride = cellSize * (PixelFormats.Bgra32.BitsPerPixel / 8); //How many bytes are needed for one row of a cell, used for drawing
+        public int CellSize { get; set; } //How many pixels one cell in the grid is
+        private int stride; //How many bytes are needed for one row of a cell, used for drawing
         public int imageWidth { get; set; } //How many pixels wide the image is
         public int imageHeight { get; set; } //How many pixels high the image is
         WriteableBitmap wb;
@@ -63,6 +66,13 @@ namespace WorldBuilder
             HeightMap = new float[Size, Size];
             MoistureMap = new float[Size, Size];
             BorderMatrix = new float[Size, Size];
+        }
+
+        //Method for resizing cells and stride
+        public void resizeCells(int size)
+        {
+            CellSize = size;
+            stride = CellSize * (PixelFormats.Bgra32.BitsPerPixel / 8);
         }
 
         //Method for calculating random noise at a given point with a given number of octaves
@@ -175,8 +185,8 @@ namespace WorldBuilder
         //Function for creating an image based on world data
         public WriteableBitmap generateImage()
         {
-            imageWidth = Size * cellSize;
-            imageHeight = Size * cellSize;
+            imageWidth = Size * CellSize;
+            imageHeight = Size * CellSize;
             WriteableBitmap wb = new WriteableBitmap(imageWidth, imageHeight, 300, 300, PixelFormats.Bgra32, null);
 
             //Color each cell according to its height and moisture
@@ -186,14 +196,14 @@ namespace WorldBuilder
                 {
                     //Use an Int32Rect to choose the rectangular region to edit
                     //xy of top left corner plus width and height of edited region
-                    byte[] bytes = new byte[stride * cellSize];
+                    byte[] bytes = new byte[stride * CellSize];
 
                     //Color each cell based on its height and moisture
 
                     //Snowcap
                     if (HeightMap[x, y] >= snowCapMinHeight)
                     {
-                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        for (int i = 0; i < CellSize * CellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 255;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 255;
@@ -204,7 +214,7 @@ namespace WorldBuilder
                     //High mountains
                     else if (HeightMap[x, y] >= highMountainMinHeight)
                     {
-                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        for (int i = 0; i < CellSize * CellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 143;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 162;
@@ -215,7 +225,7 @@ namespace WorldBuilder
                     //Mountainous low
                     else if (HeightMap[x, y] >= lowMountainMinHeight)
                     {
-                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        for (int i = 0; i < CellSize * CellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 123;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 142;
@@ -229,7 +239,7 @@ namespace WorldBuilder
                         //Wetlands
                         if (MoistureMap[x, y] >= wetlandsMinMoisture)
                         {
-                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            for (int i = 0; i < CellSize * CellSize; ++i)
                             {
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 0;
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 77;
@@ -240,7 +250,7 @@ namespace WorldBuilder
                         //Grasslands
                         else if (MoistureMap[x, y] >= grasslandsMinMoisture)
                         {
-                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            for (int i = 0; i < CellSize * CellSize; ++i)
                             {
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 20;
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 97;
@@ -251,7 +261,7 @@ namespace WorldBuilder
                         //Dry grasslands
                         else if (MoistureMap[x, y] >= dryGrasslandsMinMoisture)
                         {
-                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            for (int i = 0; i < CellSize * CellSize; ++i)
                             {
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 50;
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 127;
@@ -262,7 +272,7 @@ namespace WorldBuilder
                         //Savanna
                         else if (MoistureMap[x, y] >= savannaMinMoisture)
                         {
-                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            for (int i = 0; i < CellSize * CellSize; ++i)
                             {
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 69;
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 118;
@@ -273,7 +283,7 @@ namespace WorldBuilder
                         //low moisture desert
                         else
                         {
-                            for (int i = 0; i < cellSize * cellSize; ++i)
+                            for (int i = 0; i < CellSize * CellSize; ++i)
                             {
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
                                 bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
@@ -285,7 +295,7 @@ namespace WorldBuilder
                     //Beach
                     else if (HeightMap[x, y] >= beachMinHeight)
                     {
-                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        for (int i = 0; i < CellSize * CellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 129;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 177;
@@ -296,7 +306,7 @@ namespace WorldBuilder
                     //Shallow water
                     else if (HeightMap[x, y] >= shallowWaterMinHeight)
                     {
-                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        for (int i = 0; i < CellSize * CellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 198;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 82;
@@ -307,7 +317,7 @@ namespace WorldBuilder
                     //Deep water
                     else
                     {
-                        for (int i = 0; i < cellSize * cellSize; ++i)
+                        for (int i = 0; i < CellSize * CellSize; ++i)
                         {
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8)] = 178;
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 1] = 62;
@@ -315,7 +325,7 @@ namespace WorldBuilder
                             bytes[i * (PixelFormats.Bgra32.BitsPerPixel / 8) + 3] = 255;
                         }
                     }
-                    Int32Rect rect = new Int32Rect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    Int32Rect rect = new Int32Rect(x * CellSize, y * CellSize, CellSize, CellSize);
                     wb.WritePixels(rect, bytes, stride, 0);
                 }
             }

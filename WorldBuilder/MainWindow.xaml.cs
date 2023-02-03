@@ -159,6 +159,16 @@ namespace WorldBuilder
             }
         }
 
+        //Update cell size when text input is changed
+        private void txtCellSize_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int result;
+            if (Int32.TryParse(txtCellSize.Text, out result))
+            {
+                world.resizeCells(result);
+            }
+        }
+
         //Update amplitude when slider is changed
         private void slAmplitude_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
