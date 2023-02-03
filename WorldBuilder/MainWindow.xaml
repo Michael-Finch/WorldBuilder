@@ -103,8 +103,8 @@
                         <Label x:Name="tblBarbers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                         <Label Grid.Column="0" Content="Bathers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
                         <Label x:Name="tblBathers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-                        <Label Grid.Column="0" Content="Bee-sellers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-                        <Label x:Name="tblBeesellers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+                        <Label Grid.Column="0" Content="Beer-sellers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+                        <Label x:Name="tblBeersellers" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Top"/>
                         <Label Grid.Column="0" Content="Blacksmiths" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
                         <Label x:Name="tblBlacksmiths" Grid.Column="1" Content="0" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top"/>
                         <Label Grid.Column="0" Content="Bleachers" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="5" VerticalAlignment="Top"/>
