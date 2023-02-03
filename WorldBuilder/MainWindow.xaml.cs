@@ -223,19 +223,6 @@ namespace WorldBuilder
             {"Shoemakers", 150},        {"Spice Merchants", 1400},  {"Tailors", 250},           {"Tanners", 2000},      {"Taverns", 400},           {"Watercarriers", 850},
             {"Weavers", 600},           {"Wine-sellers", 900},      {"Woodcarvers", 2400},      {"Woodsellers", 2400}
         };
-        //Dictionary pairing the names of and number of each trade in the settlement
-        Dictionary<string, int> tradesDictionary = new Dictionary<string, int>()
-        {
-            {"Bakers", 0},              {"Barbers", 0},             {"Bathers", 0},             {"Beer-sellers", 0},    {"Blacksmiths", 0},         {"Bleachers", 0},
-            {"Bookbinders", 0},         {"Booksellers", 0},         {"Buckle Makers", 0},       {"Butchers", 0},        {"Carpenters", 0},          {"Chandlers", 0},
-            {"Chicken Butchers", 0},    {"Coopers", 0},             {"Copyists", 0},            {"Cutlers", 0},         {"Doctors", 0},             {"Fishmongers", 0},
-            {"Furriers", 0},            {"Glovemakers", 0},         {"Harness-makers", 0},      {"Hatmakers", 0},       {"Hay Merchants", 0},       {"Illuminators", 0},
-            {"Inns", 0},                {"Jewelers", 0},            {"Locksmiths", 0},          {"Magic Shops", 0},     {"Maidservants", 0},        {"Masons", 0},
-            {"Mercers", 0},             {"Old Clothes", 0},         {"Painters", 0},            {"Pastrycooks", 0},     {"Plasterers", 0},          {"Pursemakers", 0},
-            {"Roofers", 0},             {"Ropemakers", 0},          {"Rugmakers", 0},           {"Saddlers", 0},        {"Scabbardmakers", 0},      {"Sculptors", 0},
-            {"Shoemakers", 0},          {"Spice Merchants", 0},     {"Tailors", 0},             {"Tanners", 0},         {"Taverns", 0},             {"Watercarriers", 0},
-            {"Weavers", 0},             {"Wine-sellers", 0},        {"Woodcarvers", 0},         {"Woodsellers", 0}
-        };
 
         private void txtSettlementName_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -266,12 +253,12 @@ namespace WorldBuilder
         {
             //Determine what type of settlement this is
             //0-1000 people is a village
-            if(settlementPopulation <= 1000)
+            if (settlementPopulation <= 1000)
             {
                 settlementType = "village";
             }
             //1001-8000 people is a town
-            else if(settlementPopulation <= 8000)
+            else if (settlementPopulation <= 8000)
             {
                 settlementType = "town";
             }
@@ -308,13 +295,13 @@ namespace WorldBuilder
         {
             string tradesString = "";
             int tradesCount = 0;
-            foreach(KeyValuePair<string, int> i in SVDictionary)
+            foreach (KeyValuePair<string, int> i in SVDictionary)
             {
                 tradesString += string.Format("{0,-15} - {1}          ", i.Key, settlementPopulation / i.Value);
-                if(tradesCount != 0 && tradesCount % 6 == 0)
+                if (tradesCount != 0 && tradesCount % 6 == 0)
                 {
                     tradesString += "\n";
-                }    
+                }
             }
 
             txtblockOutputTrades.Text = tradesString;
@@ -699,6 +686,6 @@ namespace WorldBuilder
             }
         }
 
-        
+
     }
 }
