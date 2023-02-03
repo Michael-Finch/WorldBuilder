@@ -70,7 +70,7 @@ namespace WorldBuilder
         private void txtKingdomAge_TextChanged(object sender, TextChangedEventArgs e)
         {
             int result;
-            if(Int32.TryParse(txtKingdomAge.Text, out result))
+            if (Int32.TryParse(txtKingdomAge.Text, out result))
             {
                 kingdom.Age = result;
             }
@@ -149,7 +149,7 @@ namespace WorldBuilder
         private void txtPopulation_TextChanged(object sender, TextChangedEventArgs e)
         {
             int result;
-            if(Int32.TryParse(txtPopulation.Text, out result))
+            if (Int32.TryParse(txtPopulation.Text, out result))
             {
                 settlement.Population = result;
             }
@@ -173,7 +173,7 @@ namespace WorldBuilder
         private void txtWorldSize_TextChanged(object sender, TextChangedEventArgs e)
         {
             int result;
-            if(Int32.TryParse(txtWorldSize.Text, out result))
+            if (Int32.TryParse(txtWorldSize.Text, out result))
             {
                 world.Size = result;
                 world.HeightMap = new float[world.Size, world.Size];
@@ -186,7 +186,7 @@ namespace WorldBuilder
         private void txtOctaves_TextChanged(object sender, TextChangedEventArgs e)
         {
             int result;
-            if(Int32.TryParse(txtOctaves.Text, out result))
+            if (Int32.TryParse(txtOctaves.Text, out result))
             {
                 world.Octaves = result;
             }
